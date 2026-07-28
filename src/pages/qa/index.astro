@@ -1,0 +1,108 @@
+---
+import "../../styles/global.css";
+import { siteConfig } from "../../config";
+
+// Q&A 数据结构
+const qaList = [
+  {
+    q: "为何 LLM 普遍训练 1～2 个 epoch？",
+    a: [
+      "① 数据量：预训练语料达数万亿 token，1～2 epoch 已足够模型充分学习数据分布；",
+      "② 过拟合：多次重复相同数据会导致模型记忆而非泛化，损害下游任务表现；",
+      "③ 成本：每多训练一个 epoch，算力和时间成本线性增长，边际收益却递减。"
+    ]
+  },
+  {
+    q: "FlashAttention V2 为什么要调整循环顺序？",
+    a: [
+      "【V1原理】标准Attention需要存储完整的 n×n 注意力矩阵，显存爆炸。FlashAttention V1 的核心思想是分块计算：将 Q、K、V 切成小块，每次只在GPU高速缓存SRAM中计算一个小块的注意力，避免在HBM中存储完整矩阵。V1采用外层遍历K/V块、内层遍历Q块的顺序。",
+      "【V1弱点】外层循环K/V意味着：对于每个输出位置，需要多次累加来自不同K/V块的贡献。这导致每个Q块要被反复从HBM加载多次，产生大量冗余的内存读写；同时Softmax的归一化因子需要在所有K/V块处理完后才能确定，中间状态必须暂存。",
+      "【V2改进】V2将循环顺序调换为外层遍历Q块、内层遍历K/V块。这样每个Q块只需加载一次，在内层循环中依次与所有K/V块交互，一次性完成该位置的全部计算。这种顺序大幅减少了HBM访问次数，提升了约2倍的实际吞吐量。"
+    ]
+  },
+  {
+    q: "LLM推理时，为什么不直接选概率最高的词，而要用采样策略？",
+    a: [
+      "【Greedy的问题】始终选择概率最高的token会导致输出单调重复、缺乏创造性。例如续写故事时，模型可能陷入「他说……他说……」的循环，因为在给定上下文下「他说」始终是最高概率选项。",
+      "【采样策略的核心思想】既参考概率分布，又引入随机性。常见方法包括：Temperature采样通过调节softmax温度参数控制分布的平滑程度，温度越高分布越均匀、随机性越强；Top-k采样只从概率最高的k个候选词中随机抽取；Top-p采样动态选取累积概率达到阈值p的最小词集进行采样。",
+      "【平衡点】采样策略让模型在「准确性」和「多样性」之间取得平衡。低温或小k/p值趋向确定性输出，适合事实问答；高温或大k/p值增加随机性，适合创意写作。"
+    ]
+  }
+];
+---
+
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="知识问答 - 深度学习常见问题解答" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>Q&A - {siteConfig.name}</title>
+  </head>
+  
+  <body class="bg-white">
+    <main class="pb-12">
+      <article class="max-w-4xl mx-auto px-6 pt-8">
+        <!-- HOME按钮 -->
+        <div class="mb-6">
+          <a href="/" class="text-gray-600 hover:text-amber-700 transition-colors font-medium text-lg tracking-wide">
+            HOME
+          </a>
+        </div>
+      
+        <!-- Header -->
+        <header class="mb-12">
+          <h1 class="text-4xl md:text-5xl font-serif font-bold tracking-tight text-gray-900 mb-4">
+            Q&A
+          </h1>
+          <div class="h-1 w-12 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full mb-4"></div>
+          <p class="text-lg text-gray-500">
+            一问一答 · 知识积累
+          </p>
+        </header>
+
+        <!-- Q&A List -->
+        <div class="space-y-6">
+          {qaList.map((item) => (
+            <div class="group">
+              <div class="flex items-start gap-3 mb-2">
+                <span class="flex-shrink-0 w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-sm font-bold">
+                  Q
+                </span>
+                <p class="font-medium text-gray-900 leading-relaxed pt-0.5">
+                  {item.q}
+                </p>
+              </div>
+              <div class="flex items-start gap-3 ml-0 pl-9">
+              <div class="text-gray-600 leading-relaxed bg-gray-50 rounded-lg p-3 -ml-3 border-l-2 border-purple-200 space-y-1">
+                  {Array.isArray(item.a) ? item.a.map((line) => <p>{line}</p>) : <p>{item.a}</p>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-400">
+          <p>持续更新中...</p>
+        </footer>
+      </article>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  .font-serif {
+    font-family: 'Noto Serif SC', 'Times New Roman', serif;
+  }
+</style>

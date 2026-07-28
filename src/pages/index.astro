@@ -1,0 +1,503 @@
+---
+import { siteConfig } from "../config";
+import "../styles/global.css";
+
+const hasProjects = siteConfig.projects && siteConfig.projects.length > 0;
+
+// 自动收集 essays 下的随笔，取最新 3 篇
+const essays = Object.entries(
+  import.meta.glob("./essays/*.md", { eager: true })
+).map(([path, mod]: [string, any]) => {
+  const { frontmatter } = mod;
+  return {
+    href: path.replace(/^\.\//, "/").replace(/\.md$/, ""),
+    title: frontmatter.title,
+    date: frontmatter.date,
+    description: frontmatter.description,
+  };
+});
+essays.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
+const latestEssays = essays.slice(0, 3);
+
+const fmtDate = (d: any) => {
+  const date = new Date(d);
+  return date.toISOString().slice(0, 10);
+};
+---
+
+<html lang="zh-CN" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={siteConfig.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>{siteConfig.name} - {siteConfig.title}</title>
+  </head>
+  
+  <body class="bg-white text-gray-900 antialiased selection:bg-purple-100 selection:text-purple-900">
+    
+    <div class="max-w-3xl mx-auto px-6 py-20 md:py-24">
+      
+      <!-- Header -->
+      <header class="mb-16 space-y-6">
+        <h1 class="text-5xl md:text-6xl font-serif font-bold tracking-tight">
+          <span class="text-black">{siteConfig.name}</span>
+        </h1>
+        <div class="h-1 w-16 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
+        <p class="text-xl md:text-2xl text-gray-500 font-serif leading-relaxed max-w-lg">
+          {siteConfig.title}
+        </p>
+      </header>
+
+      <main class="space-y-16">
+        
+        <!-- Essays -->
+        {latestEssays.length > 0 && (
+          <section>
+            <div class="flex items-baseline justify-between mb-8">
+              <h2 class="text-2xl font-bold tracking-tight text-gray-900 font-serif">
+                Essays
+              </h2>
+              <a href="/essays" class="text-sm text-gray-400 hover:text-purple-700 transition-colors font-sans">
+                全部 →
+              </a>
+            </div>
+
+            <div class="grid gap-3">
+              {latestEssays.map((essay) => (
+                <a
+                  href={essay.href}
+                  class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+                >
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                    <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                      {essay.title}
+                      <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                    </span>
+
+                    <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                      <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                        {fmtDate(essay.date)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                    {essay.description}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Projects -->
+        {hasProjects && (
+          <section>
+            <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+              Projects
+            </h2>
+            
+            <div class="grid gap-3">
+              {siteConfig.projects.map((project) => (
+                <a 
+                  href={project.link || "#"} 
+                  class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+                >
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                    <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                      {project.name}
+                      {project.isExternal && (
+                        <span class="ml-2 px-1.5 py-0.5 bg-blue-50 text-blue-500 rounded text-xs font-sans font-medium align-middle">
+                          开源项目
+                        </span>
+                      )}
+                      <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                    </span>
+                    
+                    {project.tags && project.tags.length > 0 && (
+                      <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                        {project.tags.map((tag) => (
+                          <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                    {project.description}
+                  </p>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- Paper Reading -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Paper Reading
+          </h2>
+          
+          <div class="grid gap-3">
+            <a 
+              href="/paper_reading/ppo" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  PPO
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Reinforcement Learning
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    RLHF
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    OpenAI
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                深度强化学习与大语言模型对齐的基石算法
+              </p>
+            </a>
+            
+            <a 
+              href="/paper_reading/csmapping" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  CSMapping
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Autonomous Driving
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Mapping
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Diffusion Model
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                众包建图中的语义重构与拓扑推理系统
+              </p>
+            </a>
+            
+            <a 
+              href="/paper_reading/maptrace" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  MapTrace
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    VLM
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Spatial Reasoning
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Data Synthesis
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                基于合成数据的地图路径追踪能力训练
+              </p>
+            </a>
+            
+            <a 
+              href="/paper_reading/pixelarena" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  PixelArena
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Benchmark
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Omni-Modal
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Pixel-level
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                像素级多模态模型评测基准
+              </p>
+            </a>
+          </div>
+        </section>
+
+        <!-- Dictionary -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Dictionary
+          </h2>
+          
+          <div class="border-t border-gray-100">
+            <a href="/glossary/attention" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">01</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Attention</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">深度学习中的注意力机制</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/image-attention" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">02</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Image Attention</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">图像处理中的注意力机制</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/dropout" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">03</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Dropout</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">正则化技术</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/intent-recognition" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">04</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">意图识别</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">基于 BERT 的意图分类</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/intermediate_activations" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">05</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">中间激活值</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">深度学习训练中的显存管理机制</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/GQA" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">06</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">GQA</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">分组查询注意力机制</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/adam" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">07</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Adam</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">自适应矩估计优化器与显存分析</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/mmap" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">08</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">mmap</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">内存映射与大模型训练应用</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/FFN" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">09</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">FFN</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">Transformer中的前馈神经网络</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/rerank" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">10</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Rerank</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">RAG系统中的精排策略</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/rope" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">11</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">RoPE</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">旋转位置编码详解</span>
+              </div>
+            </a>
+            
+            <a href="/glossary/rejection-sampling" class="group flex items-baseline justify-between py-3 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2">
+              <span class="font-mono text-base text-purple-600 font-medium">12</span>
+              <div class="flex-1 ml-4 sm:ml-8 flex flex-col sm:flex-row sm:items-baseline sm:justify-between">
+                <span class="font-serif font-semibold text-xl text-gray-900 group-hover:underline decoration-purple-300 decoration-2 underline-offset-4">Rejection Sampling</span>
+                <span class="text-gray-500 text-base mt-1 sm:mt-0">LLM对齐中的拒绝采样技术</span>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Notes -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Notes
+          </h2>
+          
+          <div class="grid gap-3">
+            <a 
+              href="/notes/multimodal-quantization-retrospective" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  多模态量化踩坑复盘
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    VLM
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Quantization
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Inference
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                一次 VLM 推理降精度的失败尝试，以及多模态量化的若干铁律
+              </p>
+            </a>
+
+            <a 
+              href="/notes/from-sgd-to-adamw" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  从SGD到AdamW
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Optimizer
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Deep Learning
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Training
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                优化器十五年演进史，每一步解决了上一代的什么问题
+              </p>
+            </a>
+
+            <a 
+              href="/notes/sft-to-rl" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  从SFT到RL
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+                
+                <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    LLM
+                  </span>
+                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                    Post-Training
+                  </span>
+                </div>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                后训练流水线中的阶段切换时机与决策依据
+              </p>
+            </a>
+          </div>
+        </section>
+
+        <!-- Q&A -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Q&A
+          </h2>
+          
+          <div class="grid gap-3">
+            <a 
+              href="/qa" 
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
+                <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                  Q&A
+                  <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                </span>
+              </div>
+              
+              <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                持续积累中...
+              </p>
+            </a>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-24 pt-8 border-t border-gray-200 flex justify-between items-center text-base text-gray-400 font-sans">
+        <p>&copy; {new Date().getFullYear()} {siteConfig.name}</p>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  
+  .font-serif {
+    font-family: 'Noto Serif SC', 'Times New Roman', serif;
+  }
+</style>

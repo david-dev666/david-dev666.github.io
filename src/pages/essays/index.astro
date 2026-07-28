@@ -1,0 +1,95 @@
+---
+import "../../styles/global.css";
+
+// 自动收集 essays 目录下所有 md（eager 模式）
+const essays = Object.entries(import.meta.glob("./*.md", { eager: true })).map(
+  ([path, mod]: [string, any]) => {
+    const { frontmatter } = mod;
+    return {
+      href: path.replace(/^\.\//, "/essays/").replace(/\.md$/, ""),
+      title: frontmatter.title,
+      date: frontmatter.date,
+      description: frontmatter.description,
+    };
+  }
+);
+
+// 按日期倒序（frontmatter.date 被 YAML 解析为 Date 对象，转成 ISO 字符串比较）
+essays.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
+
+// 日期格式化为 YYYY-MM-DD
+const fmtDate = (d: any) => {
+  const date = new Date(d);
+  return date.toISOString().slice(0, 10);
+};
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="随笔 - 个人化的思考与记录" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>随笔 - 博文的博客</title>
+  </head>
+
+  <body class="bg-white">
+    <main class="max-w-2xl mx-auto px-6 pt-8 pb-12">
+      <!-- HOME -->
+      <div class="mb-6">
+        <a href="/" class="text-gray-600 hover:text-amber-700 transition-colors font-medium text-lg tracking-wide">
+          HOME
+        </a>
+      </div>
+
+      <header class="mb-10">
+        <h1 class="font-serif font-bold text-3xl text-black mb-2">随笔</h1>
+        <p class="text-gray-500 text-sm">随性记录</p>
+      </header>
+
+      {
+        essays.length === 0 ? (
+          <p class="text-gray-400 text-center py-20 font-serif">还没有内容。</p>
+        ) : (
+          <div class="border-t border-gray-100">
+            {essays.map((essay) => (
+              <a
+                href={essay.href}
+                class="group block py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors px-2 -mx-2"
+              >
+                <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                  <span class="font-serif font-semibold text-lg text-gray-900 group-hover:text-purple-700 transition-colors">
+                    {essay.title}
+                  </span>
+                  <time class="text-sm text-gray-400 font-sans">
+                    {fmtDate(essay.date)}
+                  </time>
+                </div>
+                {essay.description && (
+                  <p class="text-gray-500 text-sm mt-1 leading-relaxed">
+                    {essay.description}
+                  </p>
+                )}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  body {
+    font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  }
+  .font-serif {
+    font-family: 'Noto Serif SC', 'Times New Roman', serif;
+  }
+</style>

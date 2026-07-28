@@ -1,0 +1,210 @@
+---
+import { siteConfig } from "../config";
+import "../styles/global.css";
+
+const { frontmatter } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={frontmatter.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+    <title>{frontmatter.title} - {siteConfig.name}</title>
+  </head>
+  <body class="bg-white">
+    <main class="pb-12">
+      <article class="max-w-4xl mx-auto px-6 pt-8">
+        <!-- HOME按钮 -->
+        <div class="mb-6">
+          <a href="/" class="text-gray-600 hover:text-purple-600 transition-colors font-medium text-lg tracking-wide">
+            HOME
+          </a>
+        </div>
+
+        <div class="markdown-content">
+          <slot />
+        </div>
+      </article>
+    </main>
+
+    <footer class="border-t border-gray-100 py-6">
+      <div class="max-w-4xl mx-auto px-6 text-center text-gray-500 text-sm">
+        © {new Date().getFullYear()} {siteConfig.name}
+      </div>
+    </footer>
+  </body>
+</html>
+<style is:global>
+  /* 全局重置与字体 */
+  body {
+    -webkit-font-smoothing: antialiased; /* 让字体在 Mac 上更清晰 */
+    text-rendering: optimizeLegibility;
+  }
+
+  .markdown-content {
+    color: #374151; /* Gray-700: 比纯黑柔和，比浅灰清晰 */
+    line-height: 1.75; /* 增加行高，提升长文阅读体验 */
+    font-size: 1.05rem; /* 稍微加大字号 */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  }
+
+  /* ========== 标题 ========== */
+  /* 极简风格：去除下划线，靠字重和间距区分 */
+  .markdown-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827; /* Gray-900 */
+    margin-bottom: 2rem;
+    letter-spacing: -0.025em; /* 紧凑一点更显现代 */
+  }
+
+  .markdown-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb; /* 极细的分割线 */
+  }
+
+  .markdown-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #374151;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ========== 段落与列表 ========== */
+  .markdown-content p {
+    margin-bottom: 0.45rem;
+  }
+
+  /* 列表回归原生，或者使用简单的实心点，不要用紫色大圆点 */
+  .markdown-content ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .markdown-content ul li {
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* 有序列表 */
+  .markdown-content ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .markdown-content ol li {
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ========== 链接 ========== */
+  /* 专业的克莱因蓝/科技蓝，仅在 hover 时显示下划线 */
+  .markdown-content a {
+    color: #2563eb; 
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .markdown-content a:hover {
+    border-bottom-color: #2563eb;
+  }
+
+  /* ========== 强调 ========== */
+  .markdown-content strong {
+    color: #000000;
+    font-weight: 600;
+  }
+
+  /* ========== 行内代码 ========== */
+  /* 类似于 Notion 或 GitHub 的风格 */
+  .markdown-content code:not(pre code) {
+    background: #f3f4f6; /* Gray-100 */
+    color: #be185d; /* 稍微保留一点玫红色的代码高亮，或者改为 #111827 纯黑 */
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: 'IBM Plex Mono', monospace;
+    border: 1px solid #e5e7eb; /* 增加微弱边框增加精致感 */
+  }
+
+  /* ========== 代码块 (Block) ========== */
+  /* 温暖的米棕色调，无阴影，有边框 */
+  .markdown-content pre {
+    background: #faf8f5 !important; /* 暖米色 */
+    border: 1px solid #e8e0d5;
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+  }
+
+  .markdown-content pre code {
+    background: transparent !important;
+    color: #24292e !important;
+    padding: 0;
+    font-size: 0.95em;
+    line-height: 1.25;
+    font-family: 'IBM Plex Mono', monospace; 
+  }
+
+  /* ========== 表格 ========== */
+  /* 去除竖线，强调横向阅读 */
+  .markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 1rem;
+  }
+
+  .markdown-content th {
+    text-align: left; /* 英文/中文技术文档通常左对齐 */
+    padding: 0.5rem 1rem;
+    border-bottom: 2px solid #e5e7eb;
+    color: #111827;
+    font-weight: 600;
+    background: transparent; /* 去除背景色，更加极简 */
+  }
+
+  .markdown-content td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #4b5563;
+  }
+
+  .markdown-content tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* ========== KaTeX 公式 ========== */
+  /* 行内公式 */
+  .markdown-content .katex:not(.katex-display .katex) {
+    font-size: 1em;
+  }
+
+  /* 独立公式块 */
+  .markdown-content .katex-display {
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+</style>
+
