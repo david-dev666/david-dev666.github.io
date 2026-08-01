@@ -7,9 +7,11 @@ description: 半自回归起草 + 置信度调度验证，如何同时解决生�
 
 ## 1. 投机解码的效率公式
 
-投机解码（Speculative Decoding）的核心思路是"先起草，再验证"：用一个小模型（Draft Model）快速起草若干个候选 token，再交给大模型（Target Model）并行验证，一次接受多个 token，从而摊薄大模型逐 token 解码的开销。
+LLM 自回归解码速度慢，主要有两个原因：首先是推理算法无法并行，第 t 个 token 的预测依赖于前 t-1 个 token 的 KV 向量，靠堆算力无法加速；其次是显存访问瓶颈，每生成一个 token，需要将完整的模型权重从 HBM 读取到计算单元一次，计算量并不大，大部分时间在等待数据搬运。batch 推理能摊薄一部分访存开销，但由于推理请求是随机到达的，batch size 波动较大，并行度也有限。
 
-它的效率可以写成一个简单公式：
+为了加速 LLM 推理，有研究者提出了投机解码（Speculative Decoding）方法，其核心思路是"先起草，再验证"：用一个小模型（Draft Model）快速生成 N 个候选 token，再交给大模型（Target Model）并行验证，一次接受多个 token，从而减少大模型逐 token 解码的开销。
+
+投机解码的效率公式：
 
 <div class="math-block">
 
@@ -17,7 +19,8 @@ $$L = \frac{T_{draft} + T_{verify}}{\tau}$$
 
 </div>
 
-$L$ 是生成一个 token 的平均延迟，$T_{draft}$ 是起草耗时，$T_{verify}$ 是验证耗时，$\tau$ 是每轮平均被接受的 token 数。要降低 $L$，只有三个杠杆：起草更快（降 $T_{draft}$）、起草更准（提 $\tau$）、验证更聪明（降有效 $T_{verify}$）。DSpark 这篇论文，恰好在这三个杠杆上都做了文章。
+$L$ 是生成一个 token 的平均延迟，$T_{draft}$ 是起草耗时，$T_{verify}$ 是验证耗时，$\tau$ 是每轮平均被接受的 token 数。要降低 $L$，可以从三个方向入手：加速起草，加速验证，让起草更准确。
+
 
 ## 2. 两种起草模型的两难
 

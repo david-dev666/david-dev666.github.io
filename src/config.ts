@@ -1,7 +1,7 @@
 export const siteConfig = {
-  name: "博文的博客",
-  title: "聚焦VLM多模态技术",
-  description: "博文的博客 - 探索视觉语言模型与人工智能",
+  name: "深度学习手记",
+  title: "深度学习手记",
+  description: "深度学习手记 - 视觉语言模型与深度学习的技术笔记",
   accentColor: "#7c3aed",
   // 社交链接（暂时关闭）
   // social: {

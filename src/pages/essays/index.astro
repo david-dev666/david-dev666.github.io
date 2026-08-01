@@ -1,5 +1,6 @@
 ---
 import "../../styles/global.css";
+import { siteConfig } from "../../config";
 
 // 自动收集 essays 目录下所有 md（eager 模式）
 const essays = Object.entries(import.meta.glob("./*.md", { eager: true })).map(
@@ -36,7 +37,7 @@ const fmtDate = (d: any) => {
       href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <title>随笔 - 博文的博客</title>
+    <title>随笔 - {siteConfig.name}</title>
   </head>
 
   <body class="bg-white">
