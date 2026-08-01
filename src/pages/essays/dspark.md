@@ -22,26 +22,32 @@ $$L = \frac{T_{draft} + T_{verify}}{\tau}$$
 $L$ 是生成一个 token 的平均延迟，$T_{draft}$ 是起草耗时，$T_{verify}$ 是验证耗时，$\tau$ 是每轮平均被接受的 token 数。要降低 $L$，可以从三个方向入手：加速起草，加速验证，让起草更准确。
 
 
-## 2. 两种起草模型的两难
+## 2. 两种起草方法
 
-在 DSpark 之前，起草模型分成两条路线，各有一个绕不开的缺陷。
+在 DSpark 之前，投机解码的起草模型分为两条路线。
 
-| 类型 | 代表 | 优点 | 缺点 |
-|------|------|------|------|
-| 自回归起草（Autoregressive） | Eagle 系列 | 逐 token 建模条件依赖，起草质量高 | $T_{draft} \propto \gamma$，块越长起草越慢，被迫用浅层网络+短块 |
-| 并行起草（Parallel） | DFlash、Medusa | 一次前向输出整个 $\gamma$ 长度的块，$T_{draft}$ 几乎与块长无关 | 各位置独立预测，$\tau$ 随位置迅速衰减 |
+自回归起草以 Eagle 系列为代表，其 draft 网络是 1～2 层的轻量 Transformer Decoder，输入是目标模型最后一层的 hidden state 序列和对应 token 的 embedding 序列拼接，输出是下一个位置的 hidden state，再由目标模型的 LM head 解码为 token。draft 网络每生成一个 token，就将其 append 到序列末尾再走一次前向，其运算方式与大模型很像，并且也维护了 KV cache 来避免重算。这种逐 token 的预测建模了 token 之间的条件依赖，起草质量较高。但为了起草速度，网络做得较浅，相当于用网络容量换推理速度。
 
-<div class="info-block">
-<div class="info-block-title">讨论：并行起草为什么会"衰减"？</div>
-<div class="info-block-content">
+Eagle 系列预测的是 hidden state 而非 token，好处在于：hidden state 是完整的语义表征，相比于 token 携带了更丰富的信息，因此 hidden state 层面的预测保留了更完整的信息，预测准确率更高；同时，hidden state 是连续空间，draft model 预测有误差时，LM head 仍有可能映射到正确的 token，其容错率比直接预测 token 要高。
 
-并行起草模型在一次前向中同时预测 $x_1, x_2, \dots, x_\gamma$，但预测 $x_2$ 时并不知道 $x_1$ 究竟采样成了什么——它看到的只是 $x_1$ 的所有可能性叠加在一起的隐藏状态。当 $x_1$ 存在多个合理选项时（比如续写"我喜欢"后面可以接"吃"或"睡"），模型对 $x_2$ 的预测会是这些可能性的一种"平均"，而不是"给定 $x_1=\text{吃}$ 之后"该接什么词。论文把这种现象称为**多模态碰撞（Multi-Modal Collision）**：位置越靠后，累积的分支越多，预测和真实目标分布的偏差就越大，接受率也就跌得越快。
+并行起草以 DFlash 为代表，它是一个轻量级的块扩散模型（Block Diffusion），通过单步去噪生成 $\gamma$ 长度块的 hidden state，再并行采样出所有候选 token。
 
-自回归模型则不存在这个问题——它逐 token 生成，每一步都严格条件于上一步*真实采样出*的 token，所以后面位置的条件接受率反而能维持住甚至略微上升。这也是论文观察到的一个现象：自回归模型的首 token 接受率不如并行模型（首 token 只能靠浅网络硬顶），但越往后走，自回归反超并行。
-</div>
-</div>
+具体实现为：将待生成的 $\gamma$ 个位置全部填为固定的特殊 mask token，经目标模型的 embedding 层转换为 noise embedding；同时取目标模型多个中间层当前序列的 hidden states，拼接后投影到 draft 网络的 hidden dim，得到上下文特征 $x_{\text{ctx}}$。draft 网络通过 cross-attention 注入 $x_{\text{ctx}}$ 作为条件，单次前向完成去噪，输出 $\gamma$ 个位置的 hidden state，最后通过目标模型的 LM head 计算 logits，并采样得到候选 token。
 
-也就是说：并行模型赢在"起跑快、首步准"，输在"越往后越不准"；自回归模型正好相反。DSpark 的第一个洞察，就是把两者的优点缝在一起。
+DFlash 并行解码的优势在于：$T_{draft}$ 与 block 长度几乎无关——无论起草 8 个还是 32 个 token，都只需要一次前向，因此 draft 网络可以做得更深。DFlash 的局限性在于：各位置并行预测，看不到前一个位置具体采样得到的 token，只能基于隐藏层状态进行预测，因此位置越靠后累积偏差越大，$\tau$ 随 block 长度衰减。为了保证起草的准确率，$\gamma$ 一般不大，Qwen3 取 16，LLaMA 取 10。
+
+
+| 维度 | 自回归起草（Eagle） | 并行起草（DFlash） |
+|------|---------------------|-------------------|
+| 起草方式 | 特征层面逐 token 自回归 | 块扩散，单步去噪并行输出 |
+| 网络结构 | 1–2 层轻量 Transformer Decoder | 多层 Transformer Decoder + cross-attention |
+| $T_{draft}$ 与 $\gamma$ 关系 | $T_{draft} \propto \gamma$，块越长越慢 | 几乎无关，一次前向出整个块 |
+| 典型 $\gamma$ | 8（MoE 取 4） | 16（LLaMA 取 10） |
+| 首位置预测 | 弱（网络浅） | 强（网络深） |
+| 后续位置预测 | 强（建模条件依赖） | 弱（看不到前一个 token） |
+| $\tau$ 随位置变化 | 维持 | 迅速衰减 |
+
+并行起草凭借其网络深度首个 token 预测更准，但缺乏 token 间的条件依赖，后续位置接受率衰减；自回归起草网络较浅，首位置预测偏弱，但后续位置能维持准确率。
 
 ## 3. 半自回归架构：重并行骨干 + 轻量串行头
 
