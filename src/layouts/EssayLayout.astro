@@ -231,18 +231,25 @@ const dateStr = fmtDate(frontmatter.date);
   .essay-content .katex-display {
     margin: 1rem 0;
     overflow-x: auto;
+    overflow-y: hidden;
     text-align: center;
+  }
+
+  .essay-content .katex-display > .katex {
+    white-space: nowrap;
   }
 
   /* 公式包裹层 */
   .math-block {
     text-align: center;
     overflow-x: auto;
+    overflow-y: hidden;
     margin: 1rem 0;
   }
   .math-block p {
     display: inline-block;
     text-align: left;
+    white-space: nowrap;
   }
 
   /* 信息卡片（讨论、前置知识等） */
