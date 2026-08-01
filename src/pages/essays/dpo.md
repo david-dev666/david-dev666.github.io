@@ -42,97 +42,23 @@ $$
 
 ## 2. 约束优化问题的闭式解
 
-式 $(1)$ 看起来需要跑强化学习才能求解，但实际上，对于任意固定的奖励函数 $r$，它是一个**带约束的凸优化问题**，可以解析求解。
-
-### 2.1 写出拉格朗日函数
-
-首先把目标写成最小化形式（加负号），并加上概率归一化的约束 $\sum_y \pi(y \mid x) = 1$：
+标准 RLHF 的做法是用 PPO 去解式 $(1)$——训一个奖励模型，然后跑强化学习去最大化它。但 DPO 走了一条不同的路：对于任意固定的奖励函数 $r$，这个带 KL 约束的优化问题可以直接解析求解。用变分法（拉格朗日乘子 + 对 $\pi$ 求偏导 + 归一化约束）可以解出闭式解：
 
 <div class="math-block">
 
-$$\min_{\pi} \; \mathbb{E}_{y \sim \pi}\big[-r(x, y)\big] + \beta \sum_y \pi(y \mid x) \log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)}$$
-
-$$\text{s.t.} \quad \sum_y \pi(y \mid x) = 1$$
-
-</div>
-
-引入拉格朗日乘子 $\lambda(x)$（注意 $\lambda$ 只依赖 $x$，因为约束是对每个 $x$ 独立施加的），写出拉格朗日函数：
-
-<div class="math-block">
-
-$$\mathcal{L}(\pi, \lambda) = \sum_y \pi(y \mid x)\big[-r(x, y)\big] + \beta \sum_y \pi(y \mid x) \log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} + \lambda(x)\Big(\sum_y \pi(y \mid x) - 1\Big)$$
+$$
+\pi_r^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{ref}(y \mid x) \, \exp\!\left(\frac{1}{\beta} r(x, y)\right) \tag{2}
+$$
 
 </div>
 
-### 2.2 对 $\pi(y \mid x)$ 求导
-
-把求和号里的项按单个 $y$ 拆开，对 $\pi(y \mid x)$ 求偏导：
-
-<div class="math-block">
-
-$$\frac{\partial \mathcal{L}}{\partial \pi(y \mid x)} = -r(x, y) + \beta\Big[\log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} + 1\Big] + \lambda(x)$$
-
-</div>
-
-这里用到了 $\frac{\partial}{\partial \pi}\big[\pi \log\frac{\pi}{\pi_{ref}}\big] = \log\frac{\pi}{\pi_{ref}} + 1$。
-
-令偏导为 $0$：
-
-<div class="math-block">
-
-$$-r(x, y) + \beta\Big[\log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} + 1\Big] + \lambda(x) = 0$$
-
-</div>
-
-### 2.3 解出 $\pi^*(y \mid x)$
-
-移项整理：
-
-<div class="math-block">
-
-$$\beta \log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} = r(x, y) - \lambda(x) - \beta$$
-
-$$\log\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} = \frac{1}{\beta} r(x, y) - \frac{\lambda(x) + \beta}{\beta}$$
-
-</div>
-
-两边取指数：
-
-<div class="math-block">
-
-$$\frac{\pi(y \mid x)}{\pi_{ref}(y \mid x)} = \exp\!\left(\frac{1}{\beta} r(x, y)\right) \cdot \exp\!\left(-\frac{\lambda(x) + \beta}{\beta}\right)$$
-
-</div>
-
-令 $C(x) = \exp(-\frac{\lambda(x) + \beta}{\beta})$，这是一个只依赖 $x$ 的常数：
-
-<div class="math-block">
-
-$$\pi(y \mid x) = C(x) \cdot \pi_{ref}(y \mid x) \cdot \exp\!\left(\frac{1}{\beta} r(x, y)\right)$$
-
-</div>
-
-由归一化条件 $\sum_y \pi(y \mid x) = 1$ 可以确定 $C(x)$：
-
-<div class="math-block">
-
-$$C(x) \cdot \sum_y \pi_{ref}(y \mid x) \exp\!\left(\frac{1}{\beta} r(x, y)\right) = 1 \quad\Rightarrow\quad C(x) = \frac{1}{\sum_y \pi_{ref}(y \mid x) \exp(r(x, y) / \beta)}$$
-
-</div>
-
-记 $Z(x) = \sum_y \pi_{ref}(y \mid x) \exp(r(x, y) / \beta)$，最终得到闭式解：
-
-<div class="math-block">
-
-$$\boxed{\pi_r^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{ref}(y \mid x) \, \exp\!\left(\frac{1}{\beta} r(x, y)\right)} \tag{2}$$
-
-</div>
+其中 $Z(x) = \sum_y \pi_{ref}(y \mid x) \exp(r(x, y) / \beta)$ 是配分函数，只依赖 $x$。
 
 <div class="info-block">
 <div class="info-block-title">直觉：这个式子在说什么？</div>
 <div class="info-block-content">
 
-这个式子讲了一件很朴素的事：**最优策略就是参考模型分布按奖励重新"称重"后的结果。**
+这个式子讲了一件很朴素的事：**最优策略就是参考模型分布按奖励重新「称重」后的结果。**
 
 - 奖励高的 $y$，概率质量被放大 $\exp(r / \beta)$ 倍
 - 奖励低的 $y$，概率质量被压低
@@ -140,7 +66,7 @@ $$\boxed{\pi_r^*(y \mid x) = \frac{1}{Z(x)} \, \pi_{ref}(y \mid x) \, \exp\!\lef
 
 $\beta$ 越大，指数项越平缓，重加权的力度越小，最优策略就越接近原始的 $\pi_{ref}$。
 
-这是 DPO 最关键洞察的起点：**最优策略天生就是参考模型的一个重加权版本，而不是从零学出来的独立分布。**
+这是 DPO 最关键洞察的起点：**最优策略天生就是参考模型的一个重加权版本，而不是从零学出来的独立分布。** 这意味着奖励和策略之间存在一个确定的数学关系——下一步就是把这个关系反解出来。
 
 </div>
 </div>
@@ -171,7 +97,7 @@ $$\frac{1}{\beta} r(x, y) = \log \pi_r^*(y \mid x) - \log \pi_{ref}(y \mid x) + 
 
 <div class="math-block">
 
-$$\boxed{r(x, y) = \beta \log\frac{\pi_r^*(y \mid x)}{\pi_{ref}(y \mid x)} + \beta \log Z(x)} \tag{3}$$
+$$r(x, y) = \beta \log\frac{\pi_r^*(y \mid x)}{\pi_{ref}(y \mid x)} + \beta \log Z(x) \tag{3}$$
 
 </div>
 
@@ -240,7 +166,7 @@ $Z(x) = \sum_y \pi_{ref}(y \mid x) \exp(r / \beta)$ 是对整个输出空间穷�
 
 <div class="math-block">
 
-$$\boxed{P(y_w \succ y_l \mid x) = \sigma\!\left(\beta\log\frac{\pi_\theta(y_w \mid x)}{\pi_{ref}(y_w \mid x)} - \beta\log\frac{\pi_\theta(y_l \mid x)}{\pi_{ref}(y_l \mid x)}\right)} \tag{6}$$
+$$P(y_w \succ y_l \mid x) = \sigma\!\left(\beta\log\frac{\pi_\theta(y_w \mid x)}{\pi_{ref}(y_w \mid x)} - \beta\log\frac{\pi_\theta(y_l \mid x)}{\pi_{ref}(y_l \mid x)}\right) \tag{6}$$
 
 </div>
 
@@ -252,7 +178,7 @@ $$\boxed{P(y_w \succ y_l \mid x) = \sigma\!\left(\beta\log\frac{\pi_\theta(y_w \
 
 <div class="math-block">
 
-$$\boxed{\mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = -\,\mathbb{E}_{(x, y_w, y_l) \sim D}\left[\log\sigma\!\left(\beta\log\frac{\pi_\theta(y_w \mid x)}{\pi_{ref}(y_w \mid x)} - \beta\log\frac{\pi_\theta(y_l \mid x)}{\pi_{ref}(y_l \mid x)}\right)\right]} \tag{7}$$
+$$\mathcal{L}_{DPO}(\pi_\theta; \pi_{ref}) = -\,\mathbb{E}_{(x, y_w, y_l) \sim D}\left[\log\sigma\!\left(\beta\log\frac{\pi_\theta(y_w \mid x)}{\pi_{ref}(y_w \mid x)} - \beta\log\frac{\pi_\theta(y_l \mid x)}{\pi_{ref}(y_l \mid x)}\right)\right] \tag{7}$$
 
 </div>
 
