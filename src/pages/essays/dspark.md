@@ -1,6 +1,6 @@
 ---
 layout: ../../layouts/EssayLayout.astro
-title: DSpark：用自回归头补上并行起草的短板
+title: DSpark：串行加并行的投机解码
 date: 2026-07-17
 description: 并行骨干负责速度和首 token 质量，串行头用极低开销补上后续位置的条件依赖
 ---
