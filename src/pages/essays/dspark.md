@@ -26,11 +26,11 @@ $L$ 是生成一个 token 的平均延迟，$T_{draft}$ 是起草耗时，$T_{ve
 
 在 DSpark 之前，投机解码的起草模型分为两条路线。
 
-自回归起草以 Eagle 系列为代表，其 draft 网络是 1～2 层的轻量 Transformer Decoder，输入是目标模型最后一层的 hidden state 序列和对应 token 的 embedding 序列拼接，输出是下一个位置的 hidden state，再由目标模型的 LM head 解码为 token。draft 网络每生成一个 token，就将其 append 到序列末尾再走一次前向，其运算方式与大模型很像，并且也维护了 KV cache 来避免重算。这种逐 token 的预测建模了 token 之间的条件依赖，起草质量较高。但为了起草速度，网络做得较浅，相当于用网络容量换推理速度。
+**自回归起草**以 Eagle 系列为代表，其 draft 网络是 1～2 层的轻量 Transformer Decoder，输入是目标模型最后一层的 hidden state 序列和对应 token 的 embedding 序列拼接，输出是下一个位置的 hidden state，再由目标模型的 LM head 解码为 token。draft 网络每生成一个 token，就将其 append 到序列末尾再走一次前向，其运算方式与大模型很像，并且也维护了 KV cache 来避免重算。这种逐 token 的预测建模了 token 之间的条件依赖，起草质量较高。但为了起草速度，网络做得较浅，相当于用网络容量换推理速度。
 
 Eagle 系列预测的是 hidden state 而非 token，好处在于：hidden state 是完整的语义表征，相比于 token 携带了更丰富的信息，因此 hidden state 层面的预测保留了更完整的信息，预测准确率更高；同时，hidden state 是连续空间，draft model 预测有误差时，LM head 仍有可能映射到正确的 token，其容错率比直接预测 token 要高。
 
-并行起草以 DFlash 为代表，它是一个轻量级的块扩散模型（Block Diffusion），通过单步去噪生成 $\gamma$ 长度块的 hidden state，再并行采样出所有候选 token。
+**并行起草**以 DFlash 为代表，它是一个轻量级的块扩散模型（Block Diffusion），通过单步去噪生成 $\gamma$ 长度块的 hidden state，再并行采样出所有候选 token。
 
 具体实现为：将待生成的 $\gamma$ 个位置全部填为固定的特殊 mask token，经目标模型的 embedding 层转换为 noise embedding；同时取目标模型多个中间层当前序列的 hidden states，拼接后投影到 draft 网络的 hidden dim，得到上下文特征 $x_{\text{ctx}}$。draft 网络通过 cross-attention 注入 $x_{\text{ctx}}$ 作为条件，单次前向完成去噪，输出 $\gamma$ 个位置的 hidden state，最后通过目标模型的 LM head 计算 logits，并采样得到候选 token。
 

@@ -94,6 +94,8 @@ const dateStr = fmtDate(frontmatter.date);
   .essay-content p {
     margin-bottom: 1rem;
     font-size: 1.0625rem;
+    text-align: justify;
+    text-justify: inter-ideograph;
   }
 
   /* 列表 */
@@ -179,6 +181,46 @@ const dateStr = fmtDate(frontmatter.date);
     border: none;
     border-top: 1px solid #e5e7eb;
     margin: 2rem 0;
+  }
+
+  /* 表格 */
+  .essay-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .essay-content th,
+  .essay-content td {
+    padding: 0.3rem 1rem;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+  }
+
+  .essay-content th {
+    font-weight: 600;
+    color: #111827;
+    background-color: #f9fafb;
+  }
+
+  .essay-content td {
+    color: #374151;
+  }
+
+  .essay-content tbody tr:hover {
+    background: #f9fafb;
+  }
+
+  .essay-content td code,
+  .essay-content th code {
+    font-size: 0.85em;
+    background: #f3e8ff;
+    color: #7e22ce;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.2rem;
   }
 
   /* KaTeX */
