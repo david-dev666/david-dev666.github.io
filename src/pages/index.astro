@@ -56,7 +56,26 @@ const fmtDate = (d: any) => {
       </header>
 
       <main class="space-y-16">
-        
+
+        <!-- Quiz -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Quiz
+          </h2>
+
+          <div class="grid gap-3">
+            <a
+              href="/quiz"
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <span class="font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                选择题练习
+                <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
         <!-- Essays -->
         {latestEssays.length > 0 && (
           <section>

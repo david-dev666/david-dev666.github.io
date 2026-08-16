@@ -1,0 +1,285 @@
+---
+import { siteConfig } from "../../config";
+import { questions } from "./quiz-data";
+import "../../styles/global.css";
+
+// 题目顺序随机（每次刷新重新打乱）
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const quizQuestions = shuffle(questions);
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="深度学习选择题练习" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Nunito:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Quiz - {siteConfig.name}</title>
+  </head>
+
+  <body class="bg-slate-50 min-h-screen">
+    <div class="max-w-xl mx-auto px-4 pt-5 pb-10 flex flex-col min-h-screen">
+
+      <!-- 顶部：退出 + 进度条 + 计数 -->
+      <div class="flex items-center gap-3 mb-8">
+        <a href="/" class="flex items-center gap-1.5 px-3 py-1.5 -ml-3 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors" title="返回首页">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          <span class="text-sm font-bold">HOME</span>
+        </a>
+        <div class="flex-1 h-3.5 bg-slate-200 rounded-full overflow-hidden">
+          <div id="progress-fill" class="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+        <span id="progress-text" class="text-sm font-bold text-slate-400 tabular-nums w-12 text-right"></span>
+      </div>
+
+      <!-- 主内容 -->
+      <div class="flex-1">
+        <div id="quiz-card"></div>
+      </div>
+
+      <!-- 底部操作区 -->
+      <div id="action-area" class="mt-8"></div>
+
+    </div>
+
+    <script define:vars={{ quizData: quizQuestions }}>
+      const card = document.getElementById("quiz-card");
+      const actionArea = document.getElementById("action-area");
+      const progressText = document.getElementById("progress-text");
+      const progressFill = document.getElementById("progress-fill");
+
+      const LETTERS = ["A", "B", "C", "D", "E", "F"];
+      let current = 0;
+      let correctCount = 0;
+      let selected = new Set();
+      let answered = false;
+
+      function renderQuestion() {
+        const q = quizData[current];
+        const isMultiple = q.type === "multiple";
+        selected = new Set();
+        answered = false;
+
+        progressText.textContent = `${current + 1}/${quizData.length}`;
+        progressFill.style.width = `${(current / quizData.length) * 100}%`;
+
+        const tagHtml = q.tags.map((t) =>
+          `<span class="px-2.5 py-1 bg-slate-100 text-slate-500 rounded-full text-xs font-semibold">${t}</span>`
+        ).join("");
+
+        const typeBadge = isMultiple
+          ? `<span class="px-2.5 py-1 bg-sky-100 text-sky-600 rounded-full text-xs font-semibold">多选</span>`
+          : `<span class="px-2.5 py-1 bg-violet-100 text-violet-600 rounded-full text-xs font-semibold">单选</span>`;
+
+        const optionsHtml = q.options.map((opt, oi) => `
+          <button class="quiz-option group w-full flex items-center gap-3.5 p-4 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-150 active:scale-[0.98] text-left" data-idx="${oi}">
+            <span class="option-letter flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-extrabold transition-colors">${LETTERS[oi]}</span>
+            <span class="option-text flex-1 text-[15px] font-medium text-slate-700 leading-relaxed">${opt.text}</span>
+            <span class="option-mark flex-shrink-0 w-6 h-6"></span>
+          </button>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="animate-in">
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+              ${typeBadge}
+              ${tagHtml}
+            </div>
+            <h2 class="text-xl font-extrabold text-slate-800 leading-snug mb-6">${q.question}</h2>
+            <div id="options" class="space-y-3">${optionsHtml}</div>
+            <div id="verdict" class="hidden mt-5"></div>
+            <div id="explanation" class="hidden mt-3 p-4 rounded-2xl bg-white border-2 border-slate-100 text-[15px] text-slate-600 leading-relaxed"></div>
+          </div>
+        `;
+
+        if (isMultiple) {
+          actionArea.innerHTML = `
+            <button id="confirm-btn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-bold text-lg shadow-lg shadow-violet-200 transition-all active:scale-[0.98] disabled:opacity-40 disabled:shadow-none" disabled>
+              确认
+            </button>
+          `;
+          document.getElementById("confirm-btn").addEventListener("click", () => judge());
+        } else {
+          actionArea.innerHTML = "";
+        }
+
+        card.querySelectorAll(".quiz-option").forEach((btn) => {
+          btn.addEventListener("click", () => onSelect(Number(btn.dataset.idx), isMultiple));
+        });
+      }
+
+      function onSelect(idx, isMultiple) {
+        if (answered) return;
+        const btn = card.querySelector(`.quiz-option[data-idx="${idx}"]`);
+        if (isMultiple) {
+          if (selected.has(idx)) {
+            selected.delete(idx);
+            btn.classList.remove("border-violet-400", "bg-violet-50");
+            btn.classList.add("border-slate-200", "bg-white");
+          } else {
+            selected.add(idx);
+            btn.classList.remove("border-slate-200", "bg-white");
+            btn.classList.add("border-violet-400", "bg-violet-50");
+          }
+          const confirmBtn = document.getElementById("confirm-btn");
+          if (confirmBtn) confirmBtn.disabled = selected.size === 0;
+        } else {
+          selected = new Set([idx]);
+          judge();
+        }
+      }
+
+      function judge() {
+        if (answered) return;
+        answered = true;
+
+        const q = quizData[current];
+        const correctSet = new Set(q.options.map((o, oi) => (o.correct ? oi : -1)).filter((x) => x >= 0));
+        const isCorrect = selected.size === correctSet.size && [...selected].every((s) => correctSet.has(s));
+        if (isCorrect) correctCount++;
+
+        q.options.forEach((opt, oi) => {
+          const btn = card.querySelector(`.quiz-option[data-idx="${oi}"]`);
+          const letter = btn.querySelector(".option-letter");
+          const mark = btn.querySelector(".option-mark");
+          btn.classList.remove("border-violet-400", "bg-violet-50", "active:scale-[0.98]");
+          btn.disabled = true;
+
+          if (opt.correct) {
+            btn.classList.remove("border-slate-200", "bg-white");
+            btn.classList.add("border-emerald-400", "bg-emerald-50");
+            letter.classList.remove("bg-slate-100", "text-slate-500");
+            letter.classList.add("bg-emerald-500", "text-white");
+            mark.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+          } else if (selected.has(oi)) {
+            btn.classList.remove("border-slate-200", "bg-white");
+            btn.classList.add("border-rose-300", "bg-rose-50");
+            letter.classList.remove("bg-slate-100", "text-slate-500");
+            letter.classList.add("bg-rose-400", "text-white");
+            mark.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb7185" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>`;
+          } else {
+            btn.classList.add("opacity-45");
+          }
+        });
+
+        // 判定横幅
+        const verdict = document.getElementById("verdict");
+        verdict.classList.remove("hidden");
+        if (isCorrect) {
+          verdict.innerHTML = `
+            <div class="flex items-center gap-3 p-4 rounded-2xl bg-emerald-100 animate-in">
+              <span class="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="font-bold text-emerald-700">答对了！</span>
+            </div>
+          `;
+        } else {
+          verdict.innerHTML = `
+            <div class="flex items-center gap-3 p-4 rounded-2xl bg-rose-100 animate-in">
+              <span class="w-9 h-9 rounded-full bg-rose-500 flex items-center justify-center flex-shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </span>
+              <span class="font-bold text-rose-700">答错了，再接再厉</span>
+            </div>
+          `;
+        }
+
+        const expl = document.getElementById("explanation");
+        expl.classList.remove("hidden");
+        expl.innerHTML = `<span class="font-bold text-slate-700">解析</span><br>${q.explanation}`;
+
+        const isLast = current === quizData.length - 1;
+        actionArea.innerHTML = `
+          <button id="next-btn" class="w-full py-4 rounded-2xl ${isCorrect ? "bg-gradient-to-r from-emerald-500 to-teal-500 shadow-lg shadow-emerald-200" : "bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-200"} text-white font-bold text-lg transition-all active:scale-[0.98]">
+            ${isLast ? "查看成绩" : "继续"}
+          </button>
+        `;
+        document.getElementById("next-btn").addEventListener("click", () => {
+          if (isLast) {
+            showResult();
+          } else {
+            current++;
+            renderQuestion();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        });
+      }
+
+      function showResult() {
+        const total = quizData.length;
+        const pct = Math.round((correctCount / total) * 100);
+
+        progressText.textContent = "";
+        progressFill.style.width = "100%";
+
+        let emoji, message;
+        if (pct >= 80) { emoji = "🎉"; message = "掌握得很扎实！"; }
+        else if (pct >= 60) { emoji = "👍"; message = "还不错，继续加油！"; }
+        else { emoji = "📖"; message = "建议回顾相关笔记"; }
+
+        card.innerHTML = `
+          <div class="animate-in text-center pt-8">
+            <div class="text-7xl mb-6">${emoji}</div>
+            <p class="text-5xl font-black text-slate-800 mb-2">${correctCount}<span class="text-2xl text-slate-400 font-bold">/${total}</span></p>
+            <p class="text-lg font-semibold text-slate-500 mb-1">正确率 ${pct}%</p>
+            <p class="text-base text-slate-400 mb-8">${message}</p>
+
+            <div class="rounded-2xl bg-white border-2 border-slate-100 p-5 mb-4 text-left">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-bold text-slate-500">本次成绩</span>
+                <span class="text-sm font-bold ${pct >= 60 ? "text-emerald-500" : "text-rose-400"}">${pct}%</span>
+              </div>
+              <div class="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full ${pct >= 60 ? "bg-gradient-to-r from-emerald-400 to-teal-400" : "bg-gradient-to-r from-rose-400 to-orange-300"} rounded-full" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        actionArea.innerHTML = `
+          <button id="retry-btn" class="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white font-bold text-lg shadow-lg shadow-violet-200 transition-all active:scale-[0.98]">
+            再来一套
+          </button>
+          <a href="/" class="block w-full py-4 mt-3 rounded-2xl bg-white border-2 border-slate-200 text-slate-500 font-bold text-lg text-center transition-all active:scale-[0.98]">
+            回到首页
+          </a>
+        `;
+        document.getElementById("retry-btn").addEventListener("click", () => location.reload());
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      renderQuestion();
+    </script>
+  </body>
+
+  <style is:global>
+    body {
+      font-family: 'Nunito', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .animate-in {
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</html>
