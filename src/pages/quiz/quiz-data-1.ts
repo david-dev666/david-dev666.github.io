@@ -6,7 +6,10 @@
 //   explanation: 答案解析，答完后展示
 //   tags: 题目所属知识点标签（用于展示）
 //
-// 添加新题：直接在 questions 数组末尾追加一个对象即可。
+// 规则：
+//   - 题干中不要加「（多选）」字样。是选择题型由 type 字段决定，
+//     页面会据此显示「多选」徽章，题干无需重复标注。
+//   - 添加新题：直接在 questions 数组末尾追加一个对象即可。
 
 import type { QuizQuestion } from "./types";
 
@@ -59,7 +62,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 4,
     type: "multiple",
-    question: "关于多模态模型的量化，下列哪些做法是正确的？（多选）",
+    question: "关于多模态模型的量化，下列哪些做法是正确的？",
     options: [
       { text: "视觉塔保高精度，只量化 LLM 部分", correct: true },
       { text: "量化 Projector 模块以最大化显存收益", correct: false },
@@ -87,7 +90,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 6,
     type: "multiple",
-    question: "下列哪些现象说明 SFT 已接近其能力边界，可考虑切换到 RL？（多选）",
+    question: "下列哪些现象说明 SFT 已接近其能力边界，可考虑切换到 RL？",
     options: [
       { text: "验证集 loss 持续下降，但 benchmark 分数停滞", correct: true },
       { text: "模型已能可靠遵循指令格式", correct: true },
@@ -438,7 +441,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 31,
     type: "multiple",
-    question: "下列哪些属于缓解过拟合的手段？（多选）",
+    question: "下列哪些属于缓解过拟合的手段？",
     options: [
       { text: "L2 权重正则", correct: true },
       { text: "Dropout", correct: true },
@@ -452,7 +455,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 32,
     type: "multiple",
-    question: "关于激活函数，下列正确的有？（多选）",
+    question: "关于激活函数，下列正确的有？",
     options: [
       { text: "ReLU 正区间梯度恒为 1，缓解梯度消失", correct: true },
       { text: "Sigmoid 在输入很大时梯度趋近 0", correct: true },
@@ -466,7 +469,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 33,
     type: "multiple",
-    question: "训练时损失不下降，可能的原因有？（多选）",
+    question: "训练时损失不下降，可能的原因有？",
     options: [
       { text: "学习率过小", correct: true },
       { text: "数据没有归一化", correct: true },
@@ -480,7 +483,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 34,
     type: "multiple",
-    question: "分类任务的常用评估指标包括？（多选）",
+    question: "分类任务的常用评估指标包括？",
     options: [
       { text: "Accuracy（准确率）", correct: true },
       { text: "Precision（精确率）", correct: true },
@@ -494,7 +497,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 35,
     type: "multiple",
-    question: "数据不平衡时，下列做法合理的有？（多选）",
+    question: "数据不平衡时，下列做法合理的有？",
     options: [
       { text: "对少数类过采样", correct: true },
       { text: "使用加权损失", correct: true },
@@ -508,7 +511,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 36,
     type: "multiple",
-    question: "关于批大小（batch size），下列正确的有？（多选）",
+    question: "关于批大小（batch size），下列正确的有？",
     options: [
       { text: "批越大，梯度越稳定", correct: true },
       { text: "批越大，显存占用越高", correct: true },
@@ -522,7 +525,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 37,
     type: "multiple",
-    question: "超参数调优的常见方法包括？（多选）",
+    question: "超参数调优的常见方法包括？",
     options: [
       { text: "网格搜索", correct: true },
       { text: "随机搜索", correct: true },
@@ -536,7 +539,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 38,
     type: "multiple",
-    question: "模型泛化能力好的表现是？（多选）",
+    question: "模型泛化能力好的表现是？",
     options: [
       { text: "在未见过的数据上表现稳定", correct: true },
       { text: "训练集和测试集误差差距小", correct: true },
@@ -550,7 +553,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 39,
     type: "multiple",
-    question: "下列哪些是防止梯度爆炸的手段？（多选）",
+    question: "下列哪些是防止梯度爆炸的手段？",
     options: [
       { text: "梯度裁剪（gradient clipping）", correct: true },
       { text: "权重初始化控制", correct: true },
@@ -732,7 +735,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 52,
     type: "multiple",
-    question: "下列哪些属于生成式模型？（多选）",
+    question: "下列哪些属于生成式模型？",
     options: [
       { text: "扩散模型（Diffusion）", correct: true },
       { text: "自回归语言模型（GPT）", correct: true },
@@ -746,7 +749,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 53,
     type: "multiple",
-    question: "关于损失函数与梯度，下列正确的有？（多选）",
+    question: "关于损失函数与梯度，下列正确的有？",
     options: [
       { text: "反向传播通过链式法则计算梯度", correct: true },
       { text: "梯度方向是损失上升最快的方向", correct: true },
@@ -1195,7 +1198,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 85,
     type: "multiple",
-    question: "关于自注意力，下列正确的有？（多选）",
+    question: "关于自注意力，下列正确的有？",
     options: [
       { text: "能捕捉长距离依赖", correct: true },
       { text: "可并行计算", correct: true },
@@ -1209,7 +1212,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 86,
     type: "multiple",
-    question: "下列哪些属于 FlashAttention 的优化手段？（多选）",
+    question: "下列哪些属于 FlashAttention 的优化手段？",
     options: [
       { text: "分块计算，避免存完整 n×n 矩阵", correct: true },
       { text: "利用 GPU 高速片上内存（SRAM）", correct: true },
@@ -1223,7 +1226,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 87,
     type: "multiple",
-    question: "关于 RoPE，下列正确的有？（多选）",
+    question: "关于 RoPE，下列正确的有？",
     options: [
       { text: "通过旋转矩阵编码位置", correct: true },
       { text: "编码的是相对位置", correct: true },
@@ -1237,7 +1240,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 88,
     type: "multiple",
-    question: "KV cache 优化手段包括？（多选）",
+    question: "KV cache 优化手段包括？",
     options: [
       { text: "GQA/MQA 减少 K/V 头", correct: true },
       { text: "KV cache 量化压缩", correct: true },
@@ -1251,7 +1254,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 89,
     type: "multiple",
-    question: "大模型推理加速的常用方法有？（多选）",
+    question: "大模型推理加速的常用方法有？",
     options: [
       { text: "量化（INT8/FP8）", correct: true },
       { text: "投机解码（speculative decoding）", correct: true },
@@ -1265,7 +1268,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 90,
     type: "multiple",
-    question: "关于 layer normalization，下列正确的有？（多选）",
+    question: "关于 layer normalization，下列正确的有？",
     options: [
       { text: "按样本特征维度归一化", correct: true },
       { text: "不依赖 batch 大小", correct: true },
@@ -1279,7 +1282,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 91,
     type: "multiple",
-    question: "关于位置编码，下列正确的有？（多选）",
+    question: "关于位置编码，下列正确的有？",
     options: [
       { text: "绝对位置编码注入绝对位置", correct: true },
       { text: "RoPE 编码相对位置", correct: true },
@@ -1293,7 +1296,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 92,
     type: "multiple",
-    question: "关于注意力掩码，下列正确的有？（多选）",
+    question: "关于注意力掩码，下列正确的有？",
     options: [
       { text: "因果掩码屏蔽未来位置", correct: true },
       { text: "padding mask 屏蔽填充位", correct: true },
@@ -1307,7 +1310,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 93,
     type: "multiple",
-    question: "长上下文模型处理超长输入的挑战包括？（多选）",
+    question: "长上下文模型处理超长输入的挑战包括？",
     options: [
       { text: "注意力 O(n²) 计算开销", correct: true },
       { text: "KV cache 显存膨胀", correct: true },
@@ -1447,7 +1450,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 103,
     type: "multiple",
-    question: "关于推理时 KV cache 与 attention 计算，正确的有？（多选）",
+    question: "关于推理时 KV cache 与 attention 计算，正确的有？",
     options: [
       { text: "生成新 token 时复用历史 K/V，不重算", correct: true },
       { text: "KV cache 让每个新 token 计算量近似常量", correct: true },
@@ -2284,7 +2287,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 162,
     type: "multiple",
-    question: "关于上下文窗口（context window），下列哪些说法正确？（多选）",
+    question: "关于上下文窗口（context window），下列哪些说法正确？",
     options: [
       { text: "它限制模型一次能处理的输入 token 数量", correct: true },
       { text: "超过窗口的文本无法进入注意力层", correct: true },
@@ -2340,7 +2343,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 166,
     type: "multiple",
-    question: "关于激活重计算/梯度检查点，下列哪些说法正确？（多选）",
+    question: "关于激活重计算/梯度检查点，下列哪些说法正确？",
     options: [
       { text: "它不保存全部中间激活，从而节省显存", correct: true },
       { text: "反向传播前需要重新前向来恢复激活", correct: true },
@@ -2354,7 +2357,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 167,
     type: "multiple",
-    question: "关于梯度检查点（gradient checkpointing）的代价与收益，下列哪些说法正确？（多选）",
+    question: "关于梯度检查点（gradient checkpointing）的代价与收益，下列哪些说法正确？",
     options: [
       { text: "以增加部分计算量为代价换取显存下降", correct: true },
       { text: "反向传播前要重新前向以恢复激活", correct: true },
@@ -2368,7 +2371,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 168,
     type: "multiple",
-    question: "关于 MoE（专家混合）稀疏训练，下列哪些说法正确？（多选）",
+    question: "关于 MoE（专家混合）稀疏训练，下列哪些说法正确？",
     options: [
       { text: "每个 token 只经过被路由器选中的少量专家", correct: true },
       { text: "路由器（router）给 token 选 top-k 个专家", correct: true },
@@ -2396,7 +2399,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 170,
     type: "multiple",
-    question: "关于数据并行（data parallelism），下列哪些说法正确？（多选）",
+    question: "关于数据并行（data parallelism），下列哪些说法正确？",
     options: [
       { text: "每张卡持有一份完整模型副本，各处理不同的数据分片", correct: true },
       { text: "通过 all-reduce 同步各卡的梯度", correct: true },
@@ -2410,7 +2413,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 171,
     type: "multiple",
-    question: "关于张量并行（tensor parallelism），下列哪些说法正确？（多选）",
+    question: "关于张量并行（tensor parallelism），下列哪些说法正确？",
     options: [
       { text: "把单个权重矩阵（如注意力/FFN）切分到多张卡", correct: true },
       { text: "切分后需通信合并部分计算结果", correct: true },
@@ -2424,7 +2427,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 172,
     type: "multiple",
-    question: "关于流水线并行（pipeline parallelism），下列哪些说法正确？（多选）",
+    question: "关于流水线并行（pipeline parallelism），下列哪些说法正确？",
     options: [
       { text: "把模型按层切分成若干段分给多卡", correct: true },
       { text: "数据按段顺序流经各卡", correct: true },
@@ -2508,7 +2511,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 178,
     type: "multiple",
-    question: "关于 DPO（直接偏好优化）与 PPO，下列哪些说法正确？（多选）",
+    question: "关于 DPO（直接偏好优化）与 PPO，下列哪些说法正确？",
     options: [
       { text: "DPO 用闭式损失直接优化偏好，无需单独训练奖励模型", correct: true },
       { text: "DPO 直接基于偏好对（chosen/rejected）构造目标", correct: true },
@@ -2550,7 +2553,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 181,
     type: "multiple",
-    question: "关于 LoRA 微调，下列哪些说法正确？（多选）",
+    question: "关于 LoRA 微调，下列哪些说法正确？",
     options: [
       { text: "冻结原始权重，只训练低秩增量矩阵 ΔW", correct: true },
       { text: "可训练参数量极小，省显存", correct: true },
@@ -2676,7 +2679,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 190,
     type: "multiple",
-    question: "关于预训练数据的组织，下列哪些做法合理？（多选）",
+    question: "关于预训练数据的组织，下列哪些做法合理？",
     options: [
       { text: "把质量低、重复多的文本清洗过滤掉", correct: true },
       { text: "对同一文本反复重采样来撑大数据量", correct: false },
@@ -2690,7 +2693,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 191,
     type: "multiple",
-    question: "关于学习率调度，下列哪些说法正确？（多选）",
+    question: "关于学习率调度，下列哪些说法正确？",
     options: [
       { text: "warmup 能减少训练初期的 loss spike", correct: true },
       { text: "后期把学习率衰减到很低有助于稳定收敛", correct: true },
@@ -2704,7 +2707,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 192,
     type: "multiple",
-    question: "关于混合精度训练，下列哪些说法正确？（多选）",
+    question: "关于混合精度训练，下列哪些说法正确？",
     options: [
       { text: "bf16 因指数位多，对梯度更新范围更友好", correct: true },
       { text: "通常保留一份 fp32 主权重用于参数更新", correct: true },
@@ -2718,7 +2721,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 193,
     type: "multiple",
-    question: "关于梯度累积，下列哪些说法正确？（多选）",
+    question: "关于梯度累积，下列哪些说法正确？",
     options: [
       { text: "可以在不增大显存的情况下模拟更大的 batch size", correct: true },
       { text: "累积 N 步后更新一次参数，等效 batch 变大 N 倍", correct: true },
@@ -2732,7 +2735,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 194,
     type: "multiple",
-    question: "关于梯度裁剪，下列哪些说法正确？（多选）",
+    question: "关于梯度裁剪，下列哪些说法正确？",
     options: [
       { text: "能限制单次更新的最大幅度，防梯度爆炸", correct: true },
       { text: "按全局范数裁剪（global norm clipping）考虑整批梯度", correct: true },
@@ -2746,7 +2749,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 195,
     type: "multiple",
-    question: "关于 KV cache 与推理，下列哪些说法正确？（多选）",
+    question: "关于 KV cache 与推理，下列哪些说法正确？",
     options: [
       { text: "KV cache 缓存的是前面 token 的 Key 和 Value", correct: true },
       { text: "KV cache 可以显著减少推理时重复的注意力计算", correct: true },
@@ -2760,7 +2763,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 196,
     type: "multiple",
-    question: "关于激活重计算/梯度检查点，下列哪些说法正确？（多选）",
+    question: "关于激活重计算/梯度检查点，下列哪些说法正确？",
     options: [
       { text: "通过不保存全部中间激活来节省显存", correct: true },
       { text: "反向传播前需要重新前向以恢复激活", correct: true },
@@ -2774,7 +2777,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 197,
     type: "multiple",
-    question: "关于 MoE 稀疏训练，下列哪些说法正确？（多选）",
+    question: "关于 MoE 稀疏训练，下列哪些说法正确？",
     options: [
       { text: "每个 token 只经过少量被选中的专家", correct: true },
       { text: "需要负载均衡损失避免部分专家被冷落", correct: true },
@@ -2788,7 +2791,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 198,
     type: "multiple",
-    question: "关于后训练对齐（RLHF/DPO/SFT），下列哪些说法正确？（多选）",
+    question: "关于后训练对齐（RLHF/DPO/SFT），下列哪些说法正确？",
     options: [
       { text: "SFT 用监督的指令-回答数据继续训练", correct: true },
       { text: "DPO 可直接基于偏好对优化，无需单独奖励模型", correct: true },
@@ -3508,7 +3511,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 253,
     type: "multiple",
-    question: "关于 ViT 和 CLIP 作为视觉编码器的说法，正确的有？（多选）",
+    question: "关于 ViT 和 CLIP 作为视觉编码器的说法，正确的有？",
     options: [
       { text: "CLIP 通过图文对比学习对齐图像与文本", correct: true },
       { text: "ViT 用 self-attention 建模 patch 之间的关系", correct: true },
@@ -3547,7 +3550,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 256,
     type: "multiple",
-    question: "高分辨率图像给 VLM 带来的挑战有哪些？（多选）",
+    question: "高分辨率图像给 VLM 带来的挑战有哪些？",
     options: [
       { text: "视觉 token 数量暴增，显存与计算上升", correct: true },
       { text: "KV cache 随之增大", correct: true },
@@ -3599,7 +3602,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 260,
     type: "multiple",
-    question: "多模态推理中，模型理解空间关系（如「桌子在椅子左边」）依赖哪些因素？（多选）",
+    question: "多模态推理中，模型理解空间关系（如「桌子在椅子左边」）依赖哪些因素？",
     options: [
       { text: "视觉 token 的位置编码", correct: true },
       { text: "patch 的空间顺序被保留", correct: true },
@@ -3625,7 +3628,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 262,
     type: "multiple",
-    question: "让 VLM 读懂复杂图表（柱状图、折线图、表格）通常需要？（多选）",
+    question: "让 VLM 读懂复杂图表（柱状图、折线图、表格）通常需要？",
     options: [
       { text: "高分辨率保留数值与坐标细节", correct: true },
       { text: "视觉 token 数量足够密集", correct: true },
@@ -3664,7 +3667,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 265,
     type: "multiple",
-    question: "缓解多模态幻觉的常用手段有哪些？（多选）",
+    question: "缓解多模态幻觉的常用手段有哪些？",
     options: [
       { text: "加强视觉特征在生成中的权重", correct: true },
       { text: "训练时加入对抗性幻觉数据", correct: true },
@@ -3703,7 +3706,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 268,
     type: "multiple",
-    question: "VLM 的量化与精度敏感点有哪些？（多选）",
+    question: "VLM 的量化与精度敏感点有哪些？",
     options: [
       { text: "视觉塔对低比特量化更敏感", correct: true },
       { text: "多模态对齐对精度要求高于纯文本任务", correct: true },
@@ -3729,7 +3732,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 270,
     type: "multiple",
-    question: "缓解 VLM 长视觉序列 KV cache 压力/计算量的常见做法有？（多选）",
+    question: "缓解 VLM 长视觉序列 KV cache 压力/计算量的常见做法有？",
     options: [
       { text: "合并或压缩视觉 token", correct: true },
       { text: "窗口/局部注意力限制关注范围", correct: true },
@@ -3781,7 +3784,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 274,
     type: "multiple",
-    question: "VLM 常见评测维度包括哪些？（多选）",
+    question: "VLM 常见评测维度包括哪些？",
     options: [
       { text: "知识推理（MMMU 等）", correct: true },
       { text: "幻觉（POPE 等）", correct: true },
@@ -3820,7 +3823,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 277,
     type: "multiple",
-    question: "关于 VLM 微调，说法正确的有？（多选）",
+    question: "关于 VLM 微调，说法正确的有？",
     options: [
       { text: "可冻结视觉塔只微调 LLM 与 Projector", correct: true },
       { text: "LoRA 能显著降低可训练参数量", correct: true },
@@ -3859,7 +3862,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 280,
     type: "multiple",
-    question: "多图输入相比单图，VLM 面临的额外挑战有哪些？（多选）",
+    question: "多图输入相比单图，VLM 面临的额外挑战有哪些？",
     options: [
       { text: "视觉 token 总量更大，序列更长", correct: true },
       { text: "KV cache 占用上升", correct: true },
@@ -3885,7 +3888,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 282,
     type: "multiple",
-    question: "VLM 与扩散结合的常见应用场景包括？（多选）",
+    question: "VLM 与扩散结合的常见应用场景包括？",
     options: [
       { text: "图像编辑/局部重绘", correct: true },
       { text: "根据文本与参考图生成新图", correct: true },
@@ -3937,7 +3940,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 286,
     type: "multiple",
-    question: "VLM 中减少视觉 token 数量的技术有哪些？（多选）",
+    question: "VLM 中减少视觉 token 数量的技术有哪些？",
     options: [
       { text: "token 合并/池化", correct: true },
       { text: "pruning 丢弃冗余 token", correct: true },
@@ -3976,7 +3979,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 289,
     type: "multiple",
-    question: "视觉指令微调的数据通常包含哪些成分？（多选）",
+    question: "视觉指令微调的数据通常包含哪些成分？",
     options: [
       { text: "图像与对应指令", correct: true },
       { text: "期望的参考回答", correct: true },
@@ -4015,7 +4018,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 292,
     type: "multiple",
-    question: "多模态幻觉的典型表现有哪些？（多选）",
+    question: "多模态幻觉的典型表现有哪些？",
     options: [
       { text: "说图里不存在的物体", correct: true },
       { text: "编造图中没有的文字或数字", correct: true },
@@ -4080,7 +4083,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 297,
     type: "multiple",
-    question: "VLM 部署到边缘/低显存设备可采用的策略包括？（多选）",
+    question: "VLM 部署到边缘/低显存设备可采用的策略包括？",
     options: [
       { text: "量化视觉塔与 LLM 权重", correct: true },
       { text: "token 压缩降低序列长度", correct: true },
@@ -4859,7 +4862,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 352,
     type: "multiple",
-    question: "关于 StateGraph 的状态管理，下列说法正确的有？（多选）",
+    question: "关于 StateGraph 的状态管理，下列说法正确的有？",
     options: [
       { text: "状态是图执行过程中共享的全局数据", correct: true },
       { text: "多个节点可以并行读取同一个状态", correct: true },
@@ -4901,7 +4904,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 355,
     type: "multiple",
-    question: "关于条件边（conditional edges），下列说法正确的有？（多选）",
+    question: "关于条件边（conditional edges），下列说法正确的有？",
     options: [
       { text: "在运行时根据当前状态决定下一步走哪个分支", correct: true },
       { text: "常用于实现 agent 的「有工具就继续，否则结束」循环", correct: true },
@@ -4943,7 +4946,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 358,
     type: "multiple",
-    question: "关于 LangGraph 的持久化与 checkpoint，下列正确的有？（多选）",
+    question: "关于 LangGraph 的持久化与 checkpoint，下列正确的有？",
     options: [
       { text: "checkpoint 记录图在每一步的完整状态快照", correct: true },
       { text: "配置 checkpointer 后图支持从断点恢复执行", correct: true },
@@ -4985,7 +4988,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 361,
     type: "multiple",
-    question: "关于并行分支（fan-out），下列说法正确的有？（多选）",
+    question: "关于并行分支（fan-out），下列说法正确的有？",
     options: [
       { text: "一个节点通向多个后续节点，LangGraph 自动并行执行它们", correct: true },
       { text: "并行分支共享同一份状态，通过 reducer 合并各自写入", correct: true },
@@ -5027,7 +5030,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 364,
     type: "multiple",
-    question: "关于 LangGraph 的流式输出（stream），下列正确的有？（多选）",
+    question: "关于 LangGraph 的流式输出（stream），下列正确的有？",
     options: [
       { text: "默认模式按节点为单位产出 chunk，能看到每个节点输出的 token", correct: true },
       { text: "messages 模式专门流式输出模型生成的消息 token", correct: true },
@@ -5097,7 +5100,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 369,
     type: "multiple",
-    question: "下列哪些属于 LangGraph 处理「状态 schema」时的正确做法？（多选）",
+    question: "下列哪些属于 LangGraph 处理「状态 schema」时的正确做法？",
     options: [
       { text: "可以用 TypedDict 声明状态字段及其 reducer", correct: true },
       { text: "支持用 Pydantic 模型（v2 需要 model_config）定义状态", correct: true },
@@ -5139,7 +5142,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 372,
     type: "multiple",
-    question: "关于 LangGraph 图结构的边（Edge），下列说法正确的有？（多选）",
+    question: "关于 LangGraph 图结构的边（Edge），下列说法正确的有？",
     options: [
       { text: "普通边表示无条件地从一个节点到另一个节点", correct: true },
       { text: "条件边在运行时根据状态决定走向", correct: true },
@@ -5195,7 +5198,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 376,
     type: "multiple",
-    question: "下列哪些场景适合用 LangGraph 的多 Agent / 图编排来解决？（多选）",
+    question: "下列哪些场景适合用 LangGraph 的多 Agent / 图编排来解决？",
     options: [
       { text: "需要多个专家模型分工协作的复杂任务", correct: true },
       { text: "需要人工审批介入的关键操作流程", correct: true },
@@ -5209,7 +5212,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 377,
     type: "multiple",
-    question: "关于节点抛出异常时的处理，下列说法正确的有？（多选）",
+    question: "关于节点抛出异常时的处理，下列说法正确的有？",
     options: [
       { text: "默认异常会向上抛出，终止本次运行", correct: true },
       { text: "可以在外部用 try/except 或 await 捕获处理", correct: true },
@@ -5237,7 +5240,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 379,
     type: "multiple",
-    question: "关于 LangGraph 状态中字段的可选性（Optional/默认值），正确的有？（多选）",
+    question: "关于 LangGraph 状态中字段的可选性（Optional/默认值），正确的有？",
     options: [
       { text: "标注为可选的字段允许在初始状态里缺省", correct: true },
       { text: "给字段设默认值可简化初始状态构造", correct: true },
@@ -5279,7 +5282,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 382,
     type: "multiple",
-    question: "下列哪些是 LangGraph 解决 agent 常见痛点的典型手段？（多选）",
+    question: "下列哪些是 LangGraph 解决 agent 常见痛点的典型手段？",
     options: [
       { text: "用条件边 + 计数器防止 agent 无限循环", correct: true },
       { text: "用 checkpointer 实现跨会话记忆与断点恢复", correct: true },
@@ -5757,7 +5760,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 416,
     type: "multiple",
-    question: "下列哪些属于扩散模型前向加噪过程的特征？（多选）",
+    question: "下列哪些属于扩散模型前向加噪过程的特征？",
     options: [
       { text: "逐步加入高斯噪声", correct: true },
       { text: "最终接近标准高斯分布", correct: true },
@@ -5771,7 +5774,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 417,
     type: "multiple",
-    question: "关于 DDPM 与 DDIM，正确的有？（多选）",
+    question: "关于 DDPM 与 DDIM，正确的有？",
     options: [
       { text: "DDPM 采样偏随机、步数多", correct: true },
       { text: "DDIM 采样确定性更强、可用少步数", correct: true },
@@ -5785,7 +5788,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 418,
     type: "multiple",
-    question: "Latent Diffusion 中 VAE 承担哪些角色？（多选）",
+    question: "Latent Diffusion 中 VAE 承担哪些角色？",
     options: [
       { text: "编码器把图像压缩到潜在空间", correct: true },
       { text: "解码器把潜在向量还原成图像", correct: true },
@@ -5799,7 +5802,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 419,
     type: "multiple",
-    question: "关于 CFG，正确的有？（多选）",
+    question: "关于 CFG，正确的有？",
     options: [
       { text: "训练时随机丢弃条件模拟无条件分支", correct: true },
       { text: "采样时结合条件与无条件预测", correct: true },
@@ -5813,7 +5816,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 420,
     type: "multiple",
-    question: "下列哪些可以作为 ControlNet 的结构条件？（多选）",
+    question: "下列哪些可以作为 ControlNet 的结构条件？",
     options: [
       { text: "Canny 边缘图", correct: true },
       { text: "深度图", correct: true },
@@ -5827,7 +5830,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 421,
     type: "multiple",
-    question: "关于扩散模型的去噪网络，正确的有？（多选）",
+    question: "关于扩散模型的去噪网络，正确的有？",
     options: [
       { text: "U-Net 是最常见的骨干", correct: true },
       { text: "DiT 用 Transformer 替代 U-Net", correct: true },
@@ -5841,7 +5844,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 422,
     type: "multiple",
-    question: "扩散模型生成质量评估常用哪些指标？（多选）",
+    question: "扩散模型生成质量评估常用哪些指标？",
     options: [
       { text: "FID（分布距离）", correct: true },
       { text: "IS（Inception Score）", correct: true },
@@ -5855,7 +5858,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 423,
     type: "multiple",
-    question: "扩散模型推理加速的可行方案有？（多选）",
+    question: "扩散模型推理加速的可行方案有？",
     options: [
       { text: "蒸馏成少步模型", correct: true },
       { text: "模型量化", correct: true },
@@ -5869,7 +5872,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 424,
     type: "multiple",
-    question: "关于图像分辨率与 latent，正确的有？（多选）",
+    question: "关于图像分辨率与 latent，正确的有？",
     options: [
       { text: "latent 分辨率通常约为像素分辨率的 1/8", correct: true },
       { text: "分辨率越高显存和计算越大", correct: true },
@@ -5883,7 +5886,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 425,
     type: "multiple",
-    question: "关于 Inpainting/Outpainting，正确的有？（多选）",
+    question: "关于 Inpainting/Outpainting，正确的有？",
     options: [
       { text: "两者都基于遮罩（mask）控制生成区域", correct: true },
       { text: "Inpainting 填补图像内部被遮罩区域", correct: true },
@@ -5897,7 +5900,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 426,
     type: "multiple",
-    question: "视频扩散面临的挑战包括？（多选）",
+    question: "视频扩散面临的挑战包括？",
     options: [
       { text: "帧间时序连贯性", correct: true },
       { text: "计算量和显存开销大", correct: true },
@@ -5911,7 +5914,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 427,
     type: "multiple",
-    question: "扩散模型与 VLM 结合的意义包括？（多选）",
+    question: "扩散模型与 VLM 结合的意义包括？",
     options: [
       { text: "VLM 提供更强的图文理解作为条件", correct: true },
       { text: "可用于文本引导的图像编辑", correct: true },
@@ -5925,7 +5928,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 428,
     type: "multiple",
-    question: "关于噪声预测网络的训练，正确的有？（多选）",
+    question: "关于噪声预测网络的训练，正确的有？",
     options: [
       { text: "目标通常是预测所加噪声，与真实噪声算 MSE", correct: true },
       { text: "需要给不同时间步的样本训练", correct: true },
@@ -6361,7 +6364,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 461,
     type: "multiple",
-    question: "对 LLM 训练数据做去重，为什么重要？（多选）",
+    question: "对 LLM 训练数据做去重，为什么重要？",
     options: [
       { text: "去重能降低过拟合风险", correct: true },
       { text: "去重能减少训练 token 总量、省算力", correct: true },
@@ -6375,7 +6378,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 462,
     type: "multiple",
-    question: "相比整文档哈希，按 n-gram 窗口去重有哪些优势？（多选）",
+    question: "相比整文档哈希，按 n-gram 窗口去重有哪些优势？",
     options: [
       { text: "能捕捉到文档内部只有一小段的局部重复", correct: true },
       { text: "长文档整体哈希对不上时也能删掉局部重复", correct: true },
@@ -6417,7 +6420,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 465,
     type: "multiple",
-    question: "Cohen's Kappa 相比简单一致率，改进体现在哪些方面？（多选）",
+    question: "Cohen's Kappa 相比简单一致率，改进体现在哪些方面？",
     options: [
       { text: "扣除了两个标注者可能随机碰对的部分", correct: true },
       { text: "在类别不均衡时比简单一致率更可信", correct: true },
@@ -6473,7 +6476,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 469,
     type: "multiple",
-    question: "处理类别不均衡，下列哪些是常见且有效的做法？（多选）",
+    question: "处理类别不均衡，下列哪些是常见且有效的做法？",
     options: [
       { text: "对少数类做过采样（如 SMOTE）", correct: true },
       { text: "对多数类做欠采样", correct: true },
@@ -6585,7 +6588,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 477,
     type: "multiple",
-    question: "特征存储（feature store）主要解决哪些问题？（多选）",
+    question: "特征存储（feature store）主要解决哪些问题？",
     options: [
       { text: "让训练和在线推理使用同一套、同一版本的特征", correct: true },
       { text: "统一管理并复用特征，避免重复计算", correct: true },
@@ -6669,7 +6672,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 483,
     type: "multiple",
-    question: "MLM（masked language modeling）里 mask 的作用包含哪些？（多选）",
+    question: "MLM（masked language modeling）里 mask 的作用包含哪些？",
     options: [
       { text: "随机遮挡部分 token，让模型预测被遮内容", correct: true },
       { text: "让模型在双向上下文中建模语义", correct: true },
@@ -6711,7 +6714,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 486,
     type: "multiple",
-    question: "对训练数据做脱敏/匿名化，下列哪些是常见手段？（多选）",
+    question: "对训练数据做脱敏/匿名化，下列哪些是常见手段？",
     options: [
       { text: "对姓名/身份证号做掩码或替换", correct: true },
       { text: "对年龄做区间泛化（如 25 → 20-30）", correct: true },
@@ -6725,7 +6728,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 487,
     type: "multiple",
-    question: "关于差分隐私（differential privacy），下列说法正确的有？（多选）",
+    question: "关于差分隐私（differential privacy），下列说法正确的有？",
     options: [
       { text: "在查询/训练结果里注入受控随机噪声", correct: true },
       { text: "使单条样本的存在与否几乎不影响输出", correct: true },
@@ -6739,7 +6742,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 488,
     type: "multiple",
-    question: "关于合成数据（synthetic data），下列说法正确的有？（多选）",
+    question: "关于合成数据（synthetic data），下列说法正确的有？",
     options: [
       { text: "可批量生成、可控分布", correct: true },
       { text: "可规避隐私限制、补齐稀缺样本", correct: true },
@@ -6781,7 +6784,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 491,
     type: "multiple",
-    question: "关于数据增强的边界，下列说法正确的有？（多选）",
+    question: "关于数据增强的边界，下列说法正确的有？",
     options: [
       { text: "数字识别里把「6」旋转 180 度会改变语义", correct: true },
       { text: "对语义对称的图像随机翻转通常保持语义", correct: true },
@@ -6823,7 +6826,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 494,
     type: "multiple",
-    question: "困难样本挖掘（hard example mining）通常挑选哪类样本？（多选）",
+    question: "困难样本挖掘（hard example mining）通常挑选哪类样本？",
     options: [
       { text: "模型当前预测错误或置信度低的样本", correct: true },
       { text: "接近决策边界、容易混淆的样本", correct: true },
@@ -6837,7 +6840,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 495,
     type: "multiple",
-    question: "构建图文对（image-text pair）数据时，下列哪些是正确的清洗动作？（多选）",
+    question: "构建图文对（image-text pair）数据时，下列哪些是正确的清洗动作？",
     options: [
       { text: "过滤掉图文语义不匹配的样本", correct: true },
       { text: "剔除包含 PII 的文本", correct: true },
@@ -6893,7 +6896,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 499,
     type: "multiple",
-    question: "影响 LLM 最终能力的「数据三要素」通常指？（多选）",
+    question: "影响 LLM 最终能力的「数据三要素」通常指？",
     options: [
       { text: "数据数量（规模）", correct: true },
       { text: "数据质量", correct: true },
@@ -6949,7 +6952,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 503,
     type: "multiple",
-    question: "要防止管道静默产出脏数据，下列哪些是合理做法？（多选）",
+    question: "要防止管道静默产出脏数据，下列哪些是合理做法？",
     options: [
       { text: "在关键步骤做数据质量断言，失败即中断", correct: true },
       { text: "校验行数、null 比例、schema 等是否达标", correct: true },
@@ -6977,7 +6980,7 @@ export const questions: QuizQuestion[] = [
   {
     id: 505,
     type: "multiple",
-    question: "相比行式存储（如 CSV），列式存储（如 Parquet）的主要优势有？（多选）",
+    question: "相比行式存储（如 CSV），列式存储（如 Parquet）的主要优势有？",
     options: [
       { text: "同类数据相邻，压缩率更高", correct: true },
       { text: "只需读取查询涉及的列，I/O 更少", correct: true },
