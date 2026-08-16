@@ -1,19 +1,13 @@
 ---
 import { siteConfig } from "../../config";
-import { questions } from "./quiz-data";
+import { bankName, questions } from "./quiz-data";
 import "../../styles/global.css";
 
-// 题目顺序随机（每次刷新重新打乱）
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+// 每次 quiz 抽取的题目数量
+const QUIZ_SIZE = 10;
 
-const quizQuestions = shuffle(questions);
+// 完整题库（传给前端，「再来一套」时前端从中随机抽取）
+const fullBank = questions;
 ---
 
 <html lang="zh-CN">
@@ -56,13 +50,26 @@ const quizQuestions = shuffle(questions);
 
     </div>
 
-    <script define:vars={{ quizData: quizQuestions }}>
+    <script define:vars={{ fullBank: fullBank, QUIZ_SIZE: QUIZ_SIZE, bankName: bankName }}>
       const card = document.getElementById("quiz-card");
       const actionArea = document.getElementById("action-area");
       const progressText = document.getElementById("progress-text");
       const progressFill = document.getElementById("progress-fill");
 
       const LETTERS = ["A", "B", "C", "D", "E", "F"];
+
+      // 打乱数组
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      // 当前这一套题（初始为随机抽取 QUIZ_SIZE 道）
+      let quizData = shuffle(fullBank).slice(0, QUIZ_SIZE);
       let current = 0;
       let correctCount = 0;
       let selected = new Set();
@@ -85,6 +92,13 @@ const quizQuestions = shuffle(questions);
           ? `<span class="px-2.5 py-1 bg-sky-100 text-sky-600 rounded-full text-xs font-semibold">多选</span>`
           : `<span class="px-2.5 py-1 bg-violet-100 text-violet-600 rounded-full text-xs font-semibold">单选</span>`;
 
+        // 题库 + 编号徽章
+        const bankBadge = `
+          <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-semibold">
+            ${bankName} · 第 ${q.id} 题
+          </span>
+        `;
+
         const optionsHtml = q.options.map((opt, oi) => `
           <button class="quiz-option group w-full flex items-center gap-3.5 p-4 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-150 active:scale-[0.98] text-left" data-idx="${oi}">
             <span class="option-letter flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-sm font-extrabold transition-colors">${LETTERS[oi]}</span>
@@ -97,6 +111,7 @@ const quizQuestions = shuffle(questions);
           <div class="animate-in">
             <div class="flex flex-wrap items-center gap-2 mb-4">
               ${typeBadge}
+              ${bankBadge}
               ${tagHtml}
             </div>
             <h2 class="text-xl font-extrabold text-slate-800 leading-snug mb-6">${q.question}</h2>
@@ -259,7 +274,14 @@ const quizQuestions = shuffle(questions);
             回到首页
           </a>
         `;
-        document.getElementById("retry-btn").addEventListener("click", () => location.reload());
+        document.getElementById("retry-btn").addEventListener("click", () => {
+          // 重新随机抽一套，重置状态
+          quizData = shuffle(fullBank).slice(0, QUIZ_SIZE);
+          current = 0;
+          correctCount = 0;
+          renderQuestion();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
