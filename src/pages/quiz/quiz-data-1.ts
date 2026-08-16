@@ -164,9 +164,9 @@ export const questions: QuizQuestion[] = [
     question: "监督学习与无监督学习的核心区别是？",
     options: [
       { text: "监督学习有标签，无监督学习没有", correct: true },
-      { text: "监督学习不需要数据", correct: false },
-      { text: "无监督学习必须用神经网络", correct: false },
-      { text: "二者没有区别", correct: false },
+      { text: "无监督学习也有标签，但只在测试时使用", correct: false },
+      { text: "监督学习只处理表格数据，无监督只处理图像", correct: false },
+      { text: "监督学习不需要数据，无监督需要", correct: false },
     ],
     explanation:
       "监督学习用「输入-标签」对训练，目标是学输入到输出的映射；无监督学习没有标签，目标是发现数据内在结构，如聚类、降维。",
@@ -220,9 +220,9 @@ export const questions: QuizQuestion[] = [
     question: "为什么需要给网络引入激活函数？",
     options: [
       { text: "没有激活函数，多层线性层等价于一层", correct: true },
-      { text: "激活函数能减少参数量", correct: false },
-      { text: "激活函数能加速训练", correct: false },
-      { text: "激活函数用于数据增强", correct: false },
+      { text: "线性激活也能为任意深度网络引入非线性", correct: false },
+      { text: "激活函数只让输出变得更光滑", correct: false },
+      { text: "激活函数用来压缩模型体积", correct: false },
     ],
     explanation:
       "线性层叠加还是线性（等价单层），无法逼近非线性函数。激活函数引入非线性，让网络能学习复杂映射。",
@@ -234,9 +234,9 @@ export const questions: QuizQuestion[] = [
     question: "Dropout 的作用是？",
     options: [
       { text: "训练时随机丢弃部分神经元，抑制过拟合", correct: true },
-      { text: "减少模型推理时的计算量", correct: false },
-      { text: "把浮点精度降到更低", correct: false },
-      { text: "对输入做归一化", correct: false },
+      { text: "推理时同样按概率丢弃神经元来加速", correct: false },
+      { text: "等价于 L1 正则，把权重强制缩小", correct: false },
+      { text: "把输入特征缩放到固定范围", correct: false },
     ],
     explanation:
       "Dropout 在训练时按概率随机让部分神经元失活，迫使网络不依赖单一神经元，起到正则化、抑制过拟合的作用。推理时通常关闭。",
@@ -248,9 +248,9 @@ export const questions: QuizQuestion[] = [
     question: "学习率（learning rate）设置过大可能导致？",
     options: [
       { text: "损失震荡甚至发散", correct: true },
-      { text: "收敛过快", correct: false },
-      { text: "绝对没有影响", correct: false },
-      { text: "模型立即过拟合", correct: false },
+      { text: "模型更快收敛到更优解", correct: false },
+      { text: "模型更不易过拟合", correct: false },
+      { text: "训练步数不变但每步更精确", correct: false },
     ],
     explanation:
       "学习率过大会让参数跨越最优点、来回震荡，甚至损失爆炸发散。过小则收敛极慢。常用 warmup + 余弦退火等方式调度。",
@@ -262,9 +262,9 @@ export const questions: QuizQuestion[] = [
     question: "批量归一化（BatchNorm）主要解决什么问题？",
     options: [
       { text: "中间层分布漂移（internal covariate shift）", correct: true },
-      { text: "模型参数量过大", correct: false },
-      { text: "数据集不平衡", correct: false },
-      { text: "推理速度慢", correct: false },
+      { text: "训练集与测试集的领域分布差异", correct: false },
+      { text: "类别不均衡导致的样本偏置", correct: false },
+      { text: "推理时显存占用过大", correct: false },
     ],
     explanation:
       "BatchNorm 对每一批数据的激活做归一化，使中间层输入分布稳定，从而允许更大的学习率、加速收敛并有一定正则效果。",
@@ -276,9 +276,9 @@ export const questions: QuizQuestion[] = [
     question: "交叉熵损失常用于哪类任务？",
     options: [
       { text: "分类任务", correct: true },
-      { text: "回归任务", correct: false },
-      { text: "聚类任务", correct: false },
-      { text: "数据压缩", correct: false },
+      { text: "回归任务（配合线性输出层）", correct: false },
+      { text: "无监督聚类的内部准则", correct: false },
+      { text: "数据压缩的编码长度", correct: false },
     ],
     explanation:
       "交叉熵衡量两个概率分布的差异，配合 Softmax 用于分类，比均方误差更适配概率输出。回归任务一般用 MSE。",
@@ -290,9 +290,9 @@ export const questions: QuizQuestion[] = [
     question: "均方误差（MSE）损失最常用于？",
     options: [
       { text: "回归任务", correct: true },
-      { text: "二分类任务", correct: false },
-      { text: "多分类任务", correct: false },
-      { text: "序列生成", correct: false },
+      { text: "多分类任务（配合 Softmax）", correct: false },
+      { text: "度量两个概率分布之间的差异", correct: false },
+      { text: "只在二分类标签上生效", correct: false },
     ],
     explanation:
       "MSE 度量预测值与真实值的平方差，适合连续值的回归任务。分类通常用交叉熵。",
@@ -304,9 +304,9 @@ export const questions: QuizQuestion[] = [
     question: "「早停」（early stopping）策略是？",
     options: [
       { text: "验证集性能不再提升时停止训练", correct: true },
-      { text: "训练刚开始就停止", correct: false },
-      { text: "固定训练固定步数", correct: false },
-      { text: "只在数据量少时使用", correct: false },
+      { text: "验证集指标还在提升时也提前停止", correct: false },
+      { text: "只用于欠拟合阶段，过拟合时不用", correct: false },
+      { text: "每训练一轮就随机减少一批样本", correct: false },
     ],
     explanation:
       "早停监控验证集指标，一旦不再改善（可能开始过拟合）就停止训练，既防过拟合又省算力。",
@@ -318,9 +318,9 @@ export const questions: QuizQuestion[] = [
     question: "「数据增强」的主要目的是？",
     options: [
       { text: "通过对原始数据做变换，扩充数据并提升泛化", correct: true },
-      { text: "减少模型参数量", correct: false },
-      { text: "提升推理速度", correct: false },
-      { text: "替换掉有噪声的数据", correct: false },
+      { text: "只适用于图像，对文本不生效", correct: false },
+      { text: "等价于增加模型层数来提升容量", correct: false },
+      { text: "把样本标签做等价替换以增加类别", correct: false },
     ],
     explanation:
       "数据增强对样本做旋转、翻转、加噪等变换生成更多变体，增加数据多样性，降低过拟合、提升泛化能力。",
@@ -388,9 +388,9 @@ export const questions: QuizQuestion[] = [
     question: "「训练集 / 验证集 / 测试集」各自的用途？",
     options: [
       { text: "训练集学参数、验证集调超参、测试集评估最终泛化", correct: true },
-      { text: "三个数据集用途完全相同", correct: false },
-      { text: "验证集用来训练", correct: false },
-      { text: "测试集用来调超参", correct: false },
+      { text: "验证集也参与梯度更新以利用全部数据", correct: false },
+      { text: "测试集可以反复使用直到结果满意", correct: false },
+      { text: "三个数据集共享同一份数据", correct: false },
     ],
     explanation:
       "训练集用来更新参数；验证集用于调超参和早停（不参与梯度）；测试集只在最终评估一次，反映真实泛化能力，避免过拟合到验证集。",
@@ -402,9 +402,9 @@ export const questions: QuizQuestion[] = [
     question: "K 折交叉验证的做法是？",
     options: [
       { text: "把数据分 K 份，轮流取一份做验证、其余训练", correct: true },
-      { text: "只训练一次", correct: false },
-      { text: "只保留一份数据训练", correct: false },
-      { text: "把所有数据同时用于训练和验证", correct: false },
+      { text: "每折用同一份数据既训练又验证", correct: false },
+      { text: "取 K 折中分数最高的一次作为最终结果", correct: false },
+      { text: "把验证集固定为其中一折，其余只用一次", correct: false },
     ],
     explanation:
       "K 折交叉验证把数据均分 K 份，每轮取 1 份做验证、其余 K-1 份训练，循环 K 次，结果取平均，更充分地利用有限数据评估。",
@@ -416,9 +416,9 @@ export const questions: QuizQuestion[] = [
     question: "梯度下降中，mini-batch 的作用是？",
     options: [
       { text: "用一小批样本估计梯度，兼顾效率与稳定", correct: true },
-      { text: "必须用全部数据计算梯度", correct: false },
-      { text: "只用一个样本估计梯度", correct: false },
-      { text: "不参与梯度计算", correct: false },
+      { text: "批内每个样本各自算出梯度，再按层逐个更新", correct: false },
+      { text: "批越大收敛一定越慢", correct: false },
+      { text: "batch 只影响推理，不影响训练", correct: false },
     ],
     explanation:
       "mini-batch 用一批样本的平均梯度估计全局梯度，比全量更高效、比单样本更稳定。批大小是训练重要超参。",
@@ -430,9 +430,9 @@ export const questions: QuizQuestion[] = [
     question: "特征归一化（标准化）的好处是？",
     options: [
       { text: "让各特征量纲一致，加速收敛", correct: true },
-      { text: "增加特征数量", correct: false },
-      { text: "去除样本标签", correct: false },
-      { text: "把数据变成离散值", correct: false },
+      { text: "让各特征对梯度的贡献完全一致", correct: false },
+      { text: "只在树模型上有效", correct: false },
+      { text: "让特征之间变得线性无关", correct: false },
     ],
     explanation:
       "特征尺度差异大时，梯度更新在部分维度上会很慢。标准化让特征分布到相近范围，梯度更均衡，收敛更快更稳。",
@@ -516,7 +516,7 @@ export const questions: QuizQuestion[] = [
       { text: "批越大，梯度越稳定", correct: true },
       { text: "批越大，显存占用越高", correct: true },
       { text: "批越小，梯度噪声越大", correct: true },
-      { text: "批大小对训练没有任何影响", correct: false },
+      { text: "批越大，训练一定收敛到更优的解", correct: false },
     ],
     explanation:
       "批越大梯度越平滑但占显存多、更新次数少；批越小噪声大但更新频繁。批大小显著影响训练动态。",
@@ -558,7 +558,7 @@ export const questions: QuizQuestion[] = [
       { text: "梯度裁剪（gradient clipping）", correct: true },
       { text: "权重初始化控制", correct: true },
       { text: "批归一化", correct: true },
-      { text: "无限增大学习率", correct: false },
+      { text: "把梯度范数直接乘上一个大的倍数", correct: false },
     ],
     explanation:
       "梯度裁剪直接限制梯度范数、好的初始化避免前期爆炸、归一化稳定分布，都能防梯度爆炸。增大学习率反而加剧爆炸。",
@@ -570,9 +570,9 @@ export const questions: QuizQuestion[] = [
     question: "Embedding 层的作用是？",
     options: [
       { text: "把离散符号映射为稠密向量", correct: true },
-      { text: "对向量做归一化", correct: false },
-      { text: "压缩图像", correct: false },
-      { text: "做卷积运算", correct: false },
+      { text: "把离散符号映射成可学习的稀疏 one-hot", correct: false },
+      { text: "直接把 token 序号当数值参与运算", correct: false },
+      { text: "对已有向量做白化归一化", correct: false },
     ],
     explanation:
       "Embedding 把词/离散 token 查表映射为稠密向量，是神经网络处理离散输入的标准方式，后续层再学习向量间的语义关系。",
@@ -584,9 +584,9 @@ export const questions: QuizQuestion[] = [
     question: "Softmax 函数的作用是？",
     options: [
       { text: "把一组实数映射成和为 1 的概率分布", correct: true },
-      { text: "把向量压缩到 [-1, 1]", correct: false },
-      { text: "把矩阵转置", correct: false },
-      { text: "把数值离散化", correct: false },
+      { text: "把向量逐项压缩到 [-1, 1]", correct: false },
+      { text: "让输出各分量之间相互独立、互不影响", correct: false },
+      { text: "对概率分布取对数以稳定数值", correct: false },
     ],
     explanation:
       "Softmax 将一组 logits 指数化并归一化，得到每个类别的概率（总和为 1），常与交叉熵配合用于多分类输出。",
@@ -598,9 +598,9 @@ export const questions: QuizQuestion[] = [
     question: "「正则化」（regularization）的核心思想是？",
     options: [
       { text: "给损失加约束，限制模型复杂度", correct: true },
-      { text: "增加训练数据量", correct: false },
-      { text: "只训练部分层", correct: false },
-      { text: "把模型换成更大的", correct: false },
+      { text: "只约束偏置项，不约束权重", correct: false },
+      { text: "让所有权重强制为正", correct: false },
+      { text: "通过增加训练轮数来提升泛化", correct: false },
     ],
     explanation:
       "正则化通过在损失函数中加入约束项（如权重惩罚），限制模型复杂度，抑制过拟合、提升泛化。",
@@ -612,9 +612,9 @@ export const questions: QuizQuestion[] = [
     question: "「批量梯度下降」与「随机梯度下降」的本质区别是？",
     options: [
       { text: "前者用全量数据算梯度，后者用单个样本", correct: true },
-      { text: "前者不用梯度", correct: false },
-      { text: "后者没有损失函数", correct: false },
-      { text: "二者结果一定相同", correct: false },
+      { text: "前者每次用单个样本，后者用全量数据", correct: false },
+      { text: "两者的梯度估计噪声水平完全相同", correct: false },
+      { text: "随机梯度下降一定收敛得更精确", correct: false },
     ],
     explanation:
       "批量梯度下降（BGD）每次用全部数据算梯度，准确但慢；随机梯度下降（SGD）每次只用一个样本，快但有噪声。mini-batch 是两者的折中。",
@@ -626,9 +626,9 @@ export const questions: QuizQuestion[] = [
     question: "特征工程的目标是？",
     options: [
       { text: "构造或选择对模型更有效的输入特征", correct: true },
-      { text: "增加模型层数", correct: false },
-      { text: "减少模型推理延迟", correct: false },
-      { text: "压缩标签", correct: false },
+      { text: "只减少特征数量，不增加任何信息", correct: false },
+      { text: "把数值特征自动转成类别特征", correct: false },
+      { text: "替代模型去拟合标签", correct: false },
     ],
     explanation:
       "特征工程通过构造、选择、变换特征，让模型更容易学到有效模式，对传统 ML 尤其重要。",
@@ -640,9 +640,9 @@ export const questions: QuizQuestion[] = [
     question: "「模型蒸馏」（knowledge distillation）的思路是？",
     options: [
       { text: "用大模型（teacher）的输出去训练小模型（student）", correct: true },
-      { text: "把大模型拆成两个", correct: false },
-      { text: "对大模型做量化", correct: false },
-      { text: "减少训练数据", correct: false },
+      { text: "让 student 用硬标签训练、teacher 用软标签训练", correct: false },
+      { text: "把多个 teacher 的硬输出拼给 student", correct: false },
+      { text: "蒸馏只在推理阶段发生，训练时用不到", correct: false },
     ],
     explanation:
       "蒸馏用大而强的 teacher 模型的软输出（概率分布）作为监督，训练小 student 模型，让小模型在更小的规模上逼近大模型能力。",
@@ -654,9 +654,9 @@ export const questions: QuizQuestion[] = [
     question: "「偏差」（bias）与「方差」（variance）权衡中，高方差通常意味着？",
     options: [
       { text: "模型对训练集过拟合、对新数据波动大", correct: true },
-      { text: "模型过于简单", correct: false },
-      { text: "模型完全没有学习能力", correct: false },
-      { text: "数据标签噪声大", correct: false },
+      { text: "模型过于简单、学不到规律", correct: false },
+      { text: "模型容量足够，但训练数据过少", correct: false },
+      { text: "数据标注本身系统性错误", correct: false },
     ],
     explanation:
       "高方差：模型太灵活，拟合了训练集噪声，换数据表现波动大（即过拟合）。高偏差：模型太简单，学不到规律（欠拟合）。",
@@ -668,9 +668,9 @@ export const questions: QuizQuestion[] = [
     question: "「学习率调度」（learning rate schedule）的常见做法是？",
     options: [
       { text: "训练中按策略逐步调整学习率", correct: true },
-      { text: "学习率全程固定不变", correct: false },
-      { text: "随机生成学习率", correct: false },
-      { text: "学习率越大越好", correct: false },
+      { text: "只在训练初期调大，后期永不降低", correct: false },
+      { text: "用固定学习率就一定能收敛到全局最优", correct: false },
+      { text: "学习率调度等同于数据增强", correct: false },
     ],
     explanation:
       "常用 warmup（先小后升）避免初期发散，再余弦退火/阶梯下降逐步减小，兼顾收敛速度与最终精度。",
@@ -682,9 +682,9 @@ export const questions: QuizQuestion[] = [
     question: "「one-hot 编码」的特点？",
     options: [
       { text: "把类别表示成只有一个 1 其余全 0 的向量", correct: true },
-      { text: "把类别映射成连续实数", correct: false },
-      { text: "把数值归一化", correct: false },
-      { text: "只适用于数值型特征", correct: false },
+      { text: "把类别映射成有序的连续实数", correct: false },
+      { text: "自动编码类别间的相似语义关系", correct: false },
+      { text: "维度随类别数线性增长但语义更丰富", correct: false },
     ],
     explanation:
       "one-hot 用向量中某一位为 1 表示对应类别，简单但维度随类别数增长，且无法体现类别间语义关系（这正是 Embedding 要解决的）。",
@@ -710,9 +710,9 @@ export const questions: QuizQuestion[] = [
     question: "「初始化」对深度网络训练的重要性在于？",
     options: [
       { text: "好的初始化能避免梯度消失/爆炸、加速收敛", correct: true },
-      { text: "初始化完全不影响训练", correct: false },
-      { text: "初始化决定最终精度上限", correct: false },
-      { text: "初始化必须全为 0", correct: false },
+      { text: "初始化只影响收敛速度，不影响是否发散", correct: false },
+      { text: "初始化决定了最终精度的上限", correct: false },
+      { text: "全零初始化是深度网络的推荐做法", correct: false },
     ],
     explanation:
       "对称初始化（如全 0）会破坏学习；过大过小会引发爆炸/消失。He/Xavier 等按层大小缩放，让信号稳定传播。",
@@ -754,7 +754,7 @@ export const questions: QuizQuestion[] = [
       { text: "反向传播通过链式法则计算梯度", correct: true },
       { text: "梯度方向是损失上升最快的方向", correct: true },
       { text: "参数沿负梯度方向更新", correct: true },
-      { text: "梯度与损失函数无关", correct: false },
+      { text: "梯度方向总是指向损失下降最快的方向", correct: false },
     ],
     explanation:
       "反向传播用链式法则求梯度；梯度指向损失上升最快的方向，因此沿负梯度更新参数以最小化损失。",
@@ -795,9 +795,9 @@ export const questions: QuizQuestion[] = [
     question: "Transformer 的输入为什么需要位置编码（positional encoding）？",
     options: [
       { text: "注意力本身没有顺序概念，需注入位置信息", correct: true },
-      { text: "增加模型参数量", correct: false },
-      { text: "为了让输出更好看", correct: false },
+      { text: "为了把 token 映射到更高维空间", correct: false },
       { text: "位置编码只在训练时用", correct: false },
+      { text: "为了增加模型参数量提升容量", correct: false },
     ],
     explanation:
       "注意力是对集合操作，打乱 token 顺序结果不变，缺少顺序感知。位置编码把位置信息加进输入，让模型知道词序。",
@@ -935,9 +935,9 @@ export const questions: QuizQuestion[] = [
     question: "KV cache 会带来什么问题？",
     options: [
       { text: "随序列长度线性增长，占用显存", correct: true },
-      { text: "让模型精度下降", correct: false },
-      { text: "使训练变慢", correct: false },
-      { text: "导致梯度消失", correct: false },
+      { text: "让注意力权重被迫以低精度保存", correct: false },
+      { text: "使模型训练时的反向传播变慢", correct: false },
+      { text: "导致梯度在深层消失", correct: false },
     ],
     explanation:
       "每个新 token 都要追加 K/V，缓存随上下文长度线性增长，长上下文或大批量时显存压力大（长序列推理的主要瓶颈）。",
@@ -949,9 +949,9 @@ export const questions: QuizQuestion[] = [
     question: "GQA（分组查询注意力）相比 MHA 的改动是？",
     options: [
       { text: "多个 Q 头共享少数 K/V 头，减少 KV cache 和计算", correct: true },
-      { text: "去掉 Q 头", correct: false },
-      { text: "用卷积替代注意力", correct: false },
-      { text: "增加更多 K/V 头", correct: false },
+      { text: "让每个 Q 头都配独立且更小的 K/V 头", correct: false },
+      { text: "把 K/V 头数增加为 Q 头数的整数倍", correct: false },
+      { text: "用卷积替代注意力以降低复杂度", correct: false },
     ],
     explanation:
       "GQA 让多组 Q 头共享同一组 K/V 头，在基本不损失质量的前提下大幅减少 KV cache 和显存，是当前大模型的常用做法。",
@@ -963,9 +963,9 @@ export const questions: QuizQuestion[] = [
     question: "MQA（多查询注意力）与 GQA 的关系是？",
     options: [
       { text: "MQA 是所有 Q 头共享一个 K/V 头的 GQA 特例", correct: true },
-      { text: "两者完全不同", correct: false },
-      { text: "MQA 比 MHA 更多参数", correct: false },
-      { text: "MQA 只在训练用", correct: false },
+      { text: "MQA 是 GQA 中共享 K/V 头数等于 Q 头数的情况", correct: false },
+      { text: "MQA 比 MHA 的 KV cache 更大", correct: false },
+      { text: "MQA 只用于训练，GQA 只用于推理", correct: false },
     ],
     explanation:
       "MQA 是所有 Q 头共用一个 K/V 头，是 GQA（共享一组 K/V 头）中共享组数为 1 的极端特例，KV cache 最小但质量略降。",
@@ -974,12 +974,12 @@ export const questions: QuizQuestion[] = [
   {
     id: 69,
     type: "single",
-    question: "Transformer 中「pre-norm」与「post-norm」指？",
+    question: "Transformer 中「pre-norm」与「post-norm」的关键区别是？",
     options: [
-      { text: "归一化放在残差分支前还是后", correct: true },
-      { text: "归一化放在输入前还是输出后", correct: true },
-      { text: "归一化只在第一层", correct: false },
-      { text: "归一化与残差无关", correct: false },
+      { text: "归一化放在残差分支之前还是之后", correct: true },
+      { text: "归一化作用于输入还是作用于输出层", correct: false },
+      { text: "归一化只在第一层还是每一层", correct: false },
+      { text: "归一化是否与残差连接相关", correct: false },
     ],
     explanation:
       "post-norm 先子层后归一化（原始版），pre-norm 先归一化再子层。现代大模型多用 pre-norm，更稳定、允许更深网络。",
@@ -991,9 +991,9 @@ export const questions: QuizQuestion[] = [
     question: "「旋转位置编码」（RoPE）的特点？",
     options: [
       { text: "用旋转矩阵编码相对位置，利于外推", correct: true },
-      { text: "只用绝对位置", correct: false },
-      { text: "无法并行", correct: false },
-      { text: "只用于 CNN", correct: false },
+      { text: "只注入绝对位置、与相对距离无关", correct: false },
+      { text: "通过偏置项叠加到注意力分数上", correct: false },
+      { text: "只在输出层起作用", correct: false },
     ],
     explanation:
       "RoPE 把位置信息通过旋转矩阵作用于 Q/K，隐式编码相对位置，对长文本外推更友好，是 LLaMA/Qwen 等的标配。",
@@ -1075,9 +1075,9 @@ export const questions: QuizQuestion[] = [
     question: "「流水线并行」（pipeline parallelism）是？",
     options: [
       { text: "把模型按层切分到多张卡，串行流水计算", correct: true },
-      { text: "把数据并行分到各卡", correct: false },
-      { text: "每张卡存完整模型", correct: false },
-      { text: "只在推理时用", correct: false },
+      { text: "把数据分给各卡、每卡持完整模型", correct: false },
+      { text: "把单个权重矩阵切分到多卡协同算一层", correct: false },
+      { text: "只在推理阶段使用", correct: false },
     ],
     explanation:
       "流水线并行把模型的不同层分到不同 GPU，前向/反向像流水线一样顺序执行，减少单卡显存压力，但有气泡开销。",
@@ -1089,9 +1089,9 @@ export const questions: QuizQuestion[] = [
     question: "「数据并行」是？",
     options: [
       { text: "多张卡各持完整模型副本，分不同数据批并行训练", correct: true },
-      { text: "把模型切分到多卡", correct: false },
-      { text: "只用一张卡", correct: false },
-      { text: "把数据压缩", correct: false },
+      { text: "把模型的不同层分到不同卡", correct: false },
+      { text: "把一层内的权重切到多卡协同计算", correct: false },
+      { text: "让每张卡只训练一部分数据、权重互不同步", correct: false },
     ],
     explanation:
       "数据并行让每张卡持有完整模型副本，处理不同数据批，通过梯度同步（如 all-reduce）保持各卡一致。",
@@ -1103,9 +1103,9 @@ export const questions: QuizQuestion[] = [
     question: "「混合精度训练」通常指？",
     options: [
       { text: "用 fp16/bf16 计算 + fp32 主权重，兼顾速度与精度", correct: true },
-      { text: "全程只用 fp32", correct: false },
-      { text: "全程只用 int8", correct: false },
-      { text: "随机选精度", correct: false },
+      { text: "全程只用 fp32 以保证精度", correct: false },
+      { text: "全程用 int8 以最大化速度", correct: false },
+      { text: "把每层随机分配一种精度", correct: false },
     ],
     explanation:
       "混合精度用低精度（fp16/bf16）做前反向和存储激活、加快速度省显存，同时保留 fp32 主权重副本保证更新精度。",
@@ -1159,9 +1159,9 @@ export const questions: QuizQuestion[] = [
     question: "Transformer 编码器-解码器结构中，交叉注意力（cross-attention）的 Q 来自？",
     options: [
       { text: "解码器，K/V 来自编码器输出", correct: true },
-      { text: "编码器，K/V 来自解码器", correct: false },
-      { text: "两者都用自身", correct: false },
-      { text: "不使用注意力", correct: false },
+      { text: "编码器，K/V 来自解码器输出", correct: false },
+      { text: "解码器，K/V 也来自解码器自身", correct: false },
+      { text: "编码器与解码器各自独立、不交互", correct: false },
     ],
     explanation:
       "交叉注意力里，解码器的查询（Q）去编码器输出的键值（K/V）里找信息，实现「源序列」到「目标序列」的对齐。",
@@ -1187,9 +1187,9 @@ export const questions: QuizQuestion[] = [
     question: "「词表」（vocabulary）指的是？",
     options: [
       { text: "模型能处理的所有 token 集合", correct: true },
-      { text: "训练数据的数量", correct: false },
-      { text: "模型的层数", correct: false },
-      { text: "注意力头数", correct: false },
+      { text: "预训练语料的句子总数", correct: false },
+      { text: "输出层维度的数值上限", correct: false },
+      { text: "词嵌入向量的维度大小", correct: false },
     ],
     explanation:
       "词表是文本被切成的所有基本单元（token）的集合，模型输出层维度通常等于词表大小，用于预测下一个 token。",
@@ -1341,9 +1341,9 @@ export const questions: QuizQuestion[] = [
     question: "「MoE」（混合专家）模型的核心思想是？",
     options: [
       { text: "路由让每个 token 只激活部分专家子网络", correct: true },
-      { text: "所有专家全部激活", correct: false },
-      { text: "只有一个模型", correct: false },
-      { text: "把模型量化", correct: false },
+      { text: "让每个 token 激活全部专家以最大化容量", correct: false },
+      { text: "多个专家按随机顺序轮流处理每个 token", correct: false },
+      { text: "把所有专家蒸馏成一个稠密模型", correct: false },
     ],
     explanation:
       "MoE 有多个「专家」FFN，路由器为每个 token 选择激活少量专家，从而在总参数量很大时保持激活参数量和计算可控。",
@@ -1355,9 +1355,9 @@ export const questions: QuizQuestion[] = [
     question: "MoE 的「稀疏激活」好处是？",
     options: [
       { text: "用更少的激活参数/计算量获得更大容量", correct: true },
-      { text: "让推理完全不需要计算", correct: false },
-      { text: "减少模型文件大小", correct: false },
-      { text: "消除注意力", correct: false },
+      { text: "让总参数量随激活减少而变小", correct: false },
+      { text: "每个 token 激活的专家越多越省算力", correct: false },
+      { text: "省去全部注意力计算", correct: false },
     ],
     explanation:
       "MoE 总参数量大但每个 token 只走部分专家，推理计算量近似于小模型，而知识容量接近大模型，是扩展模型规模的高性价比方式。",
@@ -1369,9 +1369,9 @@ export const questions: QuizQuestion[] = [
     question: "「长短期记忆」（LSTM）相对普通 RNN 的改进是？",
     options: [
       { text: "引入门控控制信息保留与遗忘", correct: true },
-      { text: "去掉递归结构", correct: false },
-      { text: "使用卷积", correct: false },
-      { text: "不使用记忆", correct: false },
+      { text: "改用卷积在时间维上并行", correct: false },
+      { text: "去掉递归依赖，改成前馈", correct: false },
+      { text: "用更大的学习率补偿梯度消失", correct: false },
     ],
     explanation:
       "LSTM 通过输入门、遗忘门、输出门控制信息流，缓解了普通 RNN 的长距离依赖和梯度消失问题，但仍是顺序处理。",
@@ -1383,9 +1383,9 @@ export const questions: QuizQuestion[] = [
     question: "「注意力」最早的核心思想「Query-Key-Value」类比理解是？",
     options: [
       { text: "用查询去匹配键，取对应值", correct: true },
-      { text: "查询决定输出长度", correct: false },
-      { text: "键是最终输出", correct: false },
-      { text: "值决定查询", correct: false },
+      { text: "用键去匹配查询，再对查询加权求和", correct: false },
+      { text: "查询直接决定值的生成方式", correct: false },
+      { text: "键和值完全等价、可互换", correct: false },
     ],
     explanation:
       "注意力像检索：Q 是「要找什么」，K 是「候选的标签」，V 是「候选的内容」，按 Q 与 K 的匹配度加权取 V。",
@@ -1397,9 +1397,9 @@ export const questions: QuizQuestion[] = [
     question: "「上下文长度」对 KV cache 的影响是？",
     options: [
       { text: "上下文越长，KV cache 占用越大", correct: true },
-      { text: "上下文长度与 KV cache 无关", correct: false },
-      { text: "上下文越长 KV cache 越小", correct: false },
-      { text: "只在训练时有影响", correct: false },
+      { text: "上下文只影响注意力计算，不影响 KV cache 大小", correct: false },
+      { text: "上下文越长 KV cache 反而越小", correct: false },
+      { text: "KV cache 大小只由模型层数决定", correct: false },
     ],
     explanation:
       "KV cache 随已生成的 token 数增长，上下文/生成长度越大，缓存的 K/V 越多，显存占用越大。",
@@ -1497,9 +1497,9 @@ export const questions: QuizQuestion[] = [
     question: "padding 的主要作用是什么？",
     options: [
       { text: "抵消卷积造成的尺寸缩小，保住边缘信息", correct: true },
-      { text: "让卷积核变成正方形", correct: false },
-      { text: "减小特征图的通道数", correct: false },
-      { text: "提高卷积的计算速度", correct: false },
+      { text: "改变卷积核的尺寸以适配输入", correct: false },
+      { text: "减小特征图的通道数以省计算", correct: false },
+      { text: "把特征图下采样到一半分辨率", correct: false },
     ],
     explanation:
       "padding 在边缘补零，避免每层卷积都缩尺寸（可以保持 H、W 不变），也让原本只被扫到一次的边缘像素有更多参与机会。",
@@ -1959,9 +1959,9 @@ export const questions: QuizQuestion[] = [
     question: "Mobilenet、EfficientNet 等轻量网络关注的核心指标是？",
     options: [
       { text: "在尽量少参数/算力的前提下保持精度", correct: true },
-      { text: "只要精度最高，不管算力", correct: false },
-      { text: "尽可能增加网络深度", correct: false },
-      { text: "只处理灰度图像", correct: false },
+      { text: "只追求极致精度，忽略算力成本", correct: false },
+      { text: "固定结构下单纯增加网络深度", correct: false },
+      { text: "把输入统一压到最小分辨率", correct: false },
     ],
     explanation:
       "移动端/边缘设备算力有限，这些网络用深度可分离卷积、NAS 搜索等手法在精度与效率间取平衡。",
@@ -6913,9 +6913,9 @@ export const questions: QuizQuestion[] = [
     question: "使用他人受版权保护的数据训练模型，核心合规风险是？",
     options: [
       { text: "版权/授权问题，可能构成侵权", correct: true },
-      { text: "文件一定无法解析", correct: false },
-      { text: "模型必然崩溃", correct: false },
-      { text: "数据量自动翻倍", correct: false },
+      { text: "只要数据是公开爬到的就天然合规", correct: false },
+      { text: "只要不商用就没有任何风险", correct: false },
+      { text: "只要去掉作者署名即可合法使用", correct: false },
     ],
     explanation:
       "爬取并训练受版权内容，核心是授权问题——是否获许可、是否违反服务条款、是否合理使用。数据合规审查需要记录数据来源与授权状态。",
@@ -6927,9 +6927,9 @@ export const questions: QuizQuestion[] = [
     question: "构建训练数据集时，理想的做法是给每条数据记录来源和授权信息，主要目的是？",
     options: [
       { text: "保证可追溯、便于合规审计和后续维权", correct: true },
-      { text: "让文件更小", correct: false },
-      { text: "加快模型收敛", correct: false },
-      { text: "替代模型训练", correct: false },
+      { text: "把数据按来源排序以加速加载", correct: false },
+      { text: "压缩存储以节省磁盘空间", correct: false },
+      { text: "让模型能反向查到每个样本来自哪", correct: false },
     ],
     explanation:
       "记录数据来源/授权/许可证（provenance），一旦有版权争议可追溯来源、证明合法性，是数据合规治理的基本要求。",
