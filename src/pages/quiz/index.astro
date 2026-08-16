@@ -114,12 +114,36 @@ const fullBank = questions;
               ${bankBadge}
               ${tagHtml}
             </div>
-            <h2 class="text-xl font-extrabold text-slate-800 leading-snug mb-6">${q.question}</h2>
+            <div class="flex items-start gap-2 mb-6">
+              <h2 class="flex-1 text-xl font-extrabold text-slate-800 leading-snug">${q.question}</h2>
+              <button id="copy-btn" title="复制题目去问 AI" class="flex-shrink-0 w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all flex items-center justify-center text-slate-400 hover:text-slate-600">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
             <div id="options" class="space-y-3">${optionsHtml}</div>
             <div id="verdict" class="hidden mt-5"></div>
             <div id="explanation" class="hidden mt-3 p-4 rounded-2xl bg-white border-2 border-slate-100 text-[15px] text-slate-600 leading-relaxed"></div>
           </div>
         `;
+
+        // 一键复制题干，方便粘贴去问 AI
+        document.getElementById("copy-btn").addEventListener("click", async () => {
+          const btn = document.getElementById("copy-btn");
+          const text = q.question;
+          try {
+            await navigator.clipboard.writeText(text);
+            btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`;
+            btn.classList.remove("bg-slate-100");
+            btn.classList.add("bg-emerald-100");
+            setTimeout(() => {
+              btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+              btn.classList.remove("bg-emerald-100");
+              btn.classList.add("bg-slate-100");
+            }, 1500);
+          } catch (e) {
+            console.error("复制失败", e);
+          }
+        });
 
         if (isMultiple) {
           actionArea.innerHTML = `
