@@ -27,6 +27,9 @@ pnpm-debug.log*
 personal/
 record/
 
+# local-only writing guidelines (not published)
+pipeline/essay_guidelines.md
+
 # python cache
 __pycache__/
 *.pyc
