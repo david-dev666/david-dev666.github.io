@@ -30,6 +30,9 @@ record/
 # local-only writing guidelines (not published)
 pipeline/essay_guidelines.md
 
+# local-only skill (not published)
+.codebuddy/skills/essay-style/
+
 # python cache
 __pycache__/
 *.pyc
