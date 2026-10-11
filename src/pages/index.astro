@@ -18,6 +18,7 @@ const essays = Object.entries(
 });
 essays.sort((a, b) => (new Date(a.date) < new Date(b.date) ? 1 : -1));
 const latestEssays = essays.slice(0, 3);
+const olderEssays = essays.slice(3);
 
 const fmtDate = (d: any) => {
   const date = new Date(d);
@@ -57,35 +58,13 @@ const fmtDate = (d: any) => {
 
       <main class="space-y-16">
 
-        <!-- Quiz -->
-        <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
-            Quiz
-          </h2>
-
-          <div class="grid gap-3">
-            <a
-              href="/quiz"
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
-            >
-              <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
-                选择题练习
-                <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
-              </span>
-            </a>
-          </div>
-        </section>
-
         <!-- Essays -->
         {latestEssays.length > 0 && (
           <section>
-            <div class="flex items-baseline justify-between mb-8">
+            <div class="mb-8">
               <h2 class="text-2xl font-bold tracking-tight text-gray-900 font-serif">
                 Essays
               </h2>
-              <a href="/essays" class="text-sm text-gray-400 hover:text-purple-700 transition-colors font-sans">
-                全部 →
-              </a>
             </div>
 
             <div class="grid gap-3">
@@ -113,6 +92,47 @@ const fmtDate = (d: any) => {
                 </a>
               ))}
             </div>
+
+            {olderEssays.length > 0 && (
+              <details class="essay-archive mt-2">
+                <summary class="flex w-full cursor-pointer list-none justify-center py-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-300 [&::-webkit-details-marker]:hidden">
+                  <span class="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-gray-200 bg-gray-50 px-8 font-sans text-base font-medium text-gray-700 shadow-sm transition-all duration-200 hover:border-gray-300 hover:bg-gray-100 hover:shadow">
+                    <span>更多</span>
+                    <svg class="essay-archive-chevron h-4 w-4 shrink-0 text-gray-500 transition-transform duration-200" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="m3.5 6 4.5 4 4.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </summary>
+
+                <div class="essay-archive-list grid gap-3 pb-4">
+                  {olderEssays.map((essay) => (
+                    <a
+                      href={essay.href}
+                      class="group block rounded-xl border border-gray-200 p-4 transition-all duration-300 hover:border-purple-300 hover:bg-gray-50"
+                    >
+                      <div class="flex flex-col gap-2 mb-1 sm:flex-row sm:items-baseline sm:justify-between">
+                        <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                          {essay.title}
+                          <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+                        </span>
+
+                        <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                          <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                            {fmtDate(essay.date)}
+                          </span>
+                        </div>
+                      </div>
+
+                      {essay.description && (
+                        <p class="text-gray-500 text-base md:text-lg leading-relaxed">
+                          {essay.description}
+                        </p>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              </details>
+            )}
           </section>
         )}
 
@@ -501,6 +521,25 @@ const fmtDate = (d: any) => {
           </div>
         </section>
 
+        <!-- Quiz -->
+        <section>
+          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            Quiz
+          </h2>
+
+          <div class="grid gap-3">
+            <a
+              href="/quiz"
+              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+            >
+              <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
+                选择题练习
+                <span class="inline-block opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ml-1">→</span>
+              </span>
+            </a>
+          </div>
+        </section>
+
       </main>
 
       <!-- Footer -->
@@ -510,6 +549,22 @@ const fmtDate = (d: any) => {
     </div>
   </body>
 </html>
+
+<style>
+  .essay-archive > summary { list-style: none; }
+  .essay-archive > summary::-webkit-details-marker { display: none; }
+  .essay-archive[open] .essay-archive-chevron { transform: rotate(180deg); }
+  .essay-archive[open] .essay-archive-list { animation: archive-reveal 220ms ease-out both; }
+
+  @keyframes archive-reveal {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .essay-archive[open] .essay-archive-list { animation: none; }
+  }
+</style>
 
 <style is:global>
   body {
