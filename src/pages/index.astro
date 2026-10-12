@@ -43,26 +43,26 @@ const fmtDate = (d: any) => {
   
   <body class="bg-white text-gray-900 antialiased selection:bg-purple-100 selection:text-purple-900">
     
-    <div class="max-w-3xl mx-auto px-6 py-20 md:py-24">
+    <div class="max-w-4xl mx-auto px-6 py-16 md:px-10 md:py-20">
       
       <!-- Header -->
-      <header class="mb-16 space-y-6">
-        <h1 class="text-5xl md:text-6xl font-serif font-bold tracking-tight">
+      <header class="mb-20 space-y-5">
+        <h1 class="text-5xl md:text-6xl font-serif font-semibold tracking-tight">
           <span class="text-black">{siteConfig.name}</span>
         </h1>
-        <div class="h-1 w-16 bg-gradient-to-r from-purple-600 to-pink-500 rounded-full"></div>
-        <p class="text-xl md:text-2xl text-gray-500 font-serif leading-relaxed max-w-lg">
-          {siteConfig.title}
+        <div class="h-px w-14 bg-purple-500"></div>
+        <p class="text-base md:text-lg text-gray-500 leading-relaxed max-w-lg">
+          视觉语言模型与深度学习
         </p>
       </header>
 
-      <main class="space-y-16">
+      <main class="space-y-20">
 
         <!-- Essays -->
         {latestEssays.length > 0 && (
           <section>
             <div class="mb-8">
-              <h2 class="text-2xl font-bold tracking-tight text-gray-900 font-serif">
+              <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans">
                 Essays
               </h2>
             </div>
@@ -71,7 +71,7 @@ const fmtDate = (d: any) => {
               {latestEssays.map((essay) => (
                 <a
                   href={essay.href}
-                  class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+                  class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
                 >
                   <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                     <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -80,7 +80,7 @@ const fmtDate = (d: any) => {
                     </span>
 
                     <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                      <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                      <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                         {fmtDate(essay.date)}
                       </span>
                     </div>
@@ -108,7 +108,7 @@ const fmtDate = (d: any) => {
                   {olderEssays.map((essay) => (
                     <a
                       href={essay.href}
-                      class="group block rounded-xl border border-gray-200 p-4 transition-all duration-300 hover:border-purple-300 hover:bg-gray-50"
+                      class="home-card group block rounded-2xl border border-gray-200/80 p-5 sm:p-6 transition-all duration-300 hover:border-gray-300 hover:bg-gray-50/70"
                     >
                       <div class="flex flex-col gap-2 mb-1 sm:flex-row sm:items-baseline sm:justify-between">
                         <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -117,7 +117,7 @@ const fmtDate = (d: any) => {
                         </span>
 
                         <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                          <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                          <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                             {fmtDate(essay.date)}
                           </span>
                         </div>
@@ -139,7 +139,7 @@ const fmtDate = (d: any) => {
         <!-- Projects -->
         {hasProjects && (
           <section>
-            <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+            <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
               Projects
             </h2>
             
@@ -147,7 +147,7 @@ const fmtDate = (d: any) => {
               {siteConfig.projects.map((project) => (
                 <a 
                   href={project.link || "#"} 
-                  class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+                  class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
                 >
                   <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                     <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -163,7 +163,7 @@ const fmtDate = (d: any) => {
                     {project.tags && project.tags.length > 0 && (
                       <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
                         {project.tags.map((tag) => (
-                          <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                          <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                             {tag}
                           </span>
                         ))}
@@ -182,14 +182,14 @@ const fmtDate = (d: any) => {
 
         <!-- Paper Reading -->
         <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+          <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
             Paper Reading
           </h2>
           
           <div class="grid gap-3">
             <a 
               href="/paper_reading/ppo" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -198,13 +198,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Reinforcement Learning
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     RLHF
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     OpenAI
                   </span>
                 </div>
@@ -217,7 +217,7 @@ const fmtDate = (d: any) => {
             
             <a 
               href="/paper_reading/csmapping" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -226,13 +226,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Autonomous Driving
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Mapping
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Diffusion Model
                   </span>
                 </div>
@@ -245,7 +245,7 @@ const fmtDate = (d: any) => {
             
             <a 
               href="/paper_reading/maptrace" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -254,13 +254,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     VLM
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Spatial Reasoning
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Data Synthesis
                   </span>
                 </div>
@@ -273,7 +273,7 @@ const fmtDate = (d: any) => {
             
             <a 
               href="/paper_reading/pixelarena" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -282,13 +282,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Benchmark
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Omni-Modal
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Pixel-level
                   </span>
                 </div>
@@ -303,7 +303,7 @@ const fmtDate = (d: any) => {
 
         <!-- Dictionary -->
         <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+          <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
             Dictionary
           </h2>
           
@@ -408,14 +408,14 @@ const fmtDate = (d: any) => {
 
         <!-- Notes -->
         <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+          <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
             Notes
           </h2>
           
           <div class="grid gap-3">
             <a 
               href="/notes/multimodal-quantization-retrospective" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -424,13 +424,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     VLM
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Quantization
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Inference
                   </span>
                 </div>
@@ -443,7 +443,7 @@ const fmtDate = (d: any) => {
 
             <a 
               href="/notes/from-sgd-to-adamw" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -452,13 +452,13 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Optimizer
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Deep Learning
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Training
                   </span>
                 </div>
@@ -471,7 +471,7 @@ const fmtDate = (d: any) => {
 
             <a 
               href="/notes/sft-to-rl" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -480,10 +480,10 @@ const fmtDate = (d: any) => {
                 </span>
                 
                 <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     LLM
                   </span>
-                  <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-sm font-medium border border-gray-200 group-hover:bg-white group-hover:border-purple-200 group-hover:text-purple-700 transition-colors">
+                  <span class="px-2.5 py-1 bg-gray-100/80 text-gray-500 rounded-full text-xs font-medium tracking-wide group-hover:bg-white group-hover:text-gray-700 transition-colors">
                     Post-Training
                   </span>
                 </div>
@@ -498,14 +498,14 @@ const fmtDate = (d: any) => {
 
         <!-- Q&A -->
         <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+          <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
             Q&A
           </h2>
           
           <div class="grid gap-3">
             <a 
               href="/qa" 
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 mb-1">
                 <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
@@ -523,14 +523,14 @@ const fmtDate = (d: any) => {
 
         <!-- Quiz -->
         <section>
-          <h2 class="text-2xl font-bold tracking-tight text-gray-900 mb-8 font-serif">
+          <h2 class="text-sm font-semibold tracking-[0.16em] text-gray-400 uppercase font-sans mb-8">
             Quiz
           </h2>
 
           <div class="grid gap-3">
             <a
               href="/quiz"
-              class="group block p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-gray-50 transition-all duration-300"
+              class="home-card group block p-5 sm:p-6 rounded-2xl border border-gray-200/80 hover:border-gray-300 hover:bg-gray-50/70 transition-all duration-300"
             >
               <span class="font-serif font-bold text-xl md:text-2xl text-gray-900 group-hover:text-purple-700 transition-colors">
                 选择题练习
